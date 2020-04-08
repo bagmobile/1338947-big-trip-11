@@ -1,4 +1,4 @@
-const MAX_COUNT_EVENT_LIST = 3;
+import {MAX_COUNT_EVENT_LIST} from "./config";
 
 const createTripEventTemplate = (event) => {
   return (` <li class="trip-events__item">
@@ -37,8 +37,12 @@ const createTripEventTemplate = (event) => {
                 </li>`);
 };
 
+const getItems = (tripEvents) => {
+  return tripEvents.slice(0, MAX_COUNT_EVENT_LIST).map((event) => `${createTripEventTemplate(event)}`);
+};
+
 export const createTripEventList = (tripEvents) => {
   return (`<ul class="trip-events__list">
-              ${tripEvents.slice(0, MAX_COUNT_EVENT_LIST).map((event) => `${createTripEventTemplate(event)}`)}
+              ${getItems(tripEvents)}
               </ul>`);
 };

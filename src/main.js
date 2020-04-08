@@ -4,7 +4,6 @@ import {createTripMenuTemplate} from "./components/trip-menu.js";
 import {createTripFilterTemplate} from "./components/trip-filter.js";
 import {createTripSortTemplate} from "./components/trip-sort.js";
 import {createTripDayListTemplate} from "./components/trip-day.js";
-import {createTripDayEditEventTemplate} from "./components/trip-day-edit-event";
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlElement = document.querySelector(`.trip-controls`);
@@ -15,4 +14,3 @@ render(tripControlElement.querySelector(`h2:first-child`), createTripMenuTemplat
 render(tripControlElement.querySelector(`h2:last-child`), createTripFilterTemplate(), `afterend`);
 render(tripEventsElement.querySelector(`h2:first-child`), createTripSortTemplate(), `afterend`);
 render(tripEventsElement, createTripDayListTemplate());
-createTripDayEditEventTemplate(tripEventsElement.querySelector(`.trip-events__item`), `afterend`);

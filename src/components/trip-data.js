@@ -1,14 +1,5 @@
-const allTripDays = [
-  {
-    dateTime: new Date(),
-    events: [{name: `1`}, {name: `2`}, {name: `3`}, {name: `4`}],
-  },
-  {
-    dateTime: new Date(),
-    events: [{name: `1`}],
-  },
-];
+import {tripDays} from "../data/data.js";
 
 export const getTripData = (count) => {
-  return allTripDays.slice(0, count);
+  return tripDays.slice(0, count);
 };
