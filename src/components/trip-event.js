@@ -1,35 +1,13 @@
-import {createEventOfferListTemplate} from "./event-offer";
-import {createRollupBtnTemplate} from "./form/rollup-btn";
-import {getDayDateFormat, getShortFormatTime} from "../util";
+import {OfferListType, EventOffer as EventOfferComponent} from "./event-offer.js";
+import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
+import {getShortFormatTime} from "../util.js";
+import {createElement} from "../dom-util.js";
 
-const createDayListTemplate = (list) => {
-
-  return (`<ul class="trip-days">
-          ${list}
-          </ul>`);
-};
-
-const createDayItemTemplate = (events, day = ``) => {
-
-  return (`<li class="trip-days__item  day">
-            <div class="day__info">
-            ${day}
-            </div>
-            ${events}
-          </li>`);
-};
-
-const createDayInfoTemplate = (day) => {
-  const {order, dateTime} = day;
-  const date = getDayDateFormat(dateTime);
-
-  return (`<span class="day__counter">${order}</span>
-                <time class="day__date" datetime="${date}">${date}</time>`);
-};
-
-const createEventItem = (tripEvent) => {
+const createEventItemTemplate = (tripEvent) => {
   const {title, icon, startDateTime, endDateTime, duration, price, offers} = tripEvent;
   const [start, end] = [getShortFormatTime(startDateTime), getShortFormatTime(endDateTime)];
+  const offerList = new EventOfferComponent(offers, OfferListType.CURRENT_SHORT_LIST).getTemplate();
+  const rollupBtn = new RollupBtnComponent().getTemplate();
 
   return (`<li class="trip-events__item">
                   <div class="event">
@@ -50,32 +28,32 @@ const createEventItem = (tripEvent) => {
                     <p class="event__price">
                       &euro;&nbsp;<span class="event__price-value">${price}</span>
                     </p>
-                    ${createEventOfferListTemplate(offers)}
-                    ${createRollupBtnTemplate()}
+                    ${offerList}
+                    ${rollupBtn}
                   </div>
                 </li>`);
 };
 
-const createEventList = (tripEvents) => {
-  const list = tripEvents.map((tripEvent) => createEventItem(tripEvent)).join(`\n`);
+export class TripEvent {
 
-  return (`<ul class="trip-events__list">
-    ${list}
-</ul>`);
-};
+  constructor(tripEvent) {
+    this._tripEvent = tripEvent;
+    this._element = null;
+  }
 
-export const createEventListTemplate = (tripEvents) => {
-  const list = createDayItemTemplate(createEventList(tripEvents));
+  getTemplate() {
+    return createEventItemTemplate(this._tripEvent);
+  }
 
-  return createDayListTemplate(list);
-};
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
 
-export const createDayEventListTemplate = (batchTripEvents) => {
-  const list = batchTripEvents.reduce((acc, tripEvents) => {
-    const [day, events] = tripEvents;
-    acc += createDayItemTemplate(createEventList(events), createDayInfoTemplate(day));
-    return acc;
-  }, ``);
+    return this._element;
+  }
 
-  return createDayListTemplate(list);
-};
+  removeElement() {
+    this._element = null;
+  }
+}

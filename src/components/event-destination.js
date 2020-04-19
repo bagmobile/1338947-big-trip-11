@@ -1,12 +1,14 @@
+import {createElement} from "../dom-util.js";
+
 const createPhotoItemTemplate = (photo) => {
   const {src} = photo;
 
   return (`<img class="event__photo" src="${src}" alt="Event photo">`);
 };
 
-export const createEventDestinationTemplate = (destination) => {
+const createEventDestinationTemplate = (destination) => {
   const {description, photos} = destination;
-  const list = photos.map((photo) => createPhotoItemTemplate(photo)).join(`\n`);
+  const photoList = photos.map((photo) => createPhotoItemTemplate(photo)).join(`\n`);
 
   return (`<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -15,9 +17,34 @@ export const createEventDestinationTemplate = (destination) => {
     </p>
     <div class="event__photos-container">
         <div class="event__photos-tape">
-            ${list}
+            ${photoList}
         </div>
     </div>
 </section>
 `);
 };
+
+export class EventDestination {
+
+  constructor(destination) {
+    this._destination = destination;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventDestinationTemplate(this._destination);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
