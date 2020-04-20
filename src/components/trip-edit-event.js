@@ -2,30 +2,25 @@ import {getShortFormatDate} from "../util.js";
 import {createElement} from "../dom-util.js";
 import {TripTown as TripTownComponent} from "./trip-town.js";
 import {EventType as EventTypeComponent} from "./event-type.js";
-import {OfferListType, EventOffer as EventOfferComponent} from "./event-offer.js";
+import {EventDetails as EventDetailsComponent} from "./event-details.js";
 import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
 import {SaveBtn as SaveBtnComponent} from "./form/save-btn.js";
-import {EventDestination as EventDestinationComponent} from "./event-destination.js";
 import {DeleteBtn as DeleteBtnComponent} from "./form/delete-btn.js";
 import {FavoriteBtn as FavoriteBtnComponent} from "./form/favorite-btn.js";
+import {CancelBtn as CancelBtnComponent} from "./form/cancel-btn.js";
 
-export const EventEditType = {
-  EVENT_EDIT_NEW: 1,
-  EVENT_EDIT_EXISTS: 2,
-};
-
-const createEditEventTemplate = (tripEvent) => {
-  const {icon, startDateTime, endDateTime, price, offers, destination, isFavorite} = tripEvent;
+const createEditEventTemplate = (tripEvent, isNew) => {
+  const {icon, startDateTime, endDateTime, price, offers, isFavorite} = tripEvent;
   const startTime = getShortFormatDate(startDateTime);
   const endTime = getShortFormatDate(endDateTime);
   const tripTownList = new TripTownComponent(tripEvent).getTemplate();
   const eventTypeList = new EventTypeComponent(tripEvent).getTemplate();
-  const offerList = new EventOfferComponent(offers, OfferListType.CURRENT_FULL_LIST).getTemplate();
-  const rollupBtn = new RollupBtnComponent().getTemplate();
-  const eventDestination = new EventDestinationComponent(destination).getTemplate();
+  const eventDetails = !isNew ? new EventDetailsComponent(offers).getTemplate() : ``;
+  const rollupBtn = !isNew ? new RollupBtnComponent().getTemplate() : ``;
   const saveBtn = new SaveBtnComponent().getTemplate();
-  const deleteBtn = new DeleteBtnComponent().getTemplate();
-  const favoriteBtn = new FavoriteBtnComponent(isFavorite).getTemplate();
+  const cancelBtn = isNew ? new CancelBtnComponent().getTemplate() : ``;
+  const deleteBtn = !isNew ? new DeleteBtnComponent().getTemplate() : ``;
+  const favoriteBtn = !isNew ? new FavoriteBtnComponent(isFavorite).getTemplate() : ``;
 
   return (`<li class="trip-events__item">
                   <form class="event  event--edit" action="#" method="post">
@@ -61,35 +56,26 @@ const createEditEventTemplate = (tripEvent) => {
 
                     ${saveBtn}
                     ${deleteBtn}
+                    ${cancelBtn}
                     ${favoriteBtn}
                     ${rollupBtn}
                     </header>
 
-                    <section class="event__details">
-                    ${offerList}
-                    ${eventDestination}
-                    </section>
+                    ${eventDetails}
                   </form>
                 </li>`);
 };
 
 export class EditEvent {
 
-  constructor(tripEvent, type) {
+  constructor(tripEvent, isNew = false) {
     this._tripEvent = tripEvent;
-    this._type = type;
+    this._isNew = isNew;
     this._element = null;
   }
 
   getTemplate() {
-    switch (this._type) {
-      case EventEditType.EVENT_EDIT_NEW:
-        return createEditEventTemplate(this._tripEvent);
-      case EventEditType.EVENT_EDIT_EXISTS:
-        return createEditEventTemplate(this._tripEvent);
-      default:
-        return ``;
-    }
+    return createEditEventTemplate(this._tripEvent, this._isNew);
   }
 
   getElement() {

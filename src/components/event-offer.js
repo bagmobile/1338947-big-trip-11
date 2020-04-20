@@ -3,8 +3,8 @@ import {getEventOffers} from "../data/trip-event.js";
 import {createElement} from "../dom-util.js";
 
 export const OfferListType = {
-  CURRENT_SHORT_LIST: 1,
-  CURRENT_FULL_LIST: 2,
+  SHORT_TEXT_LIST: `shortTextList`,
+  FULL_OPTION_LIST: `fullOptionList`,
 };
 
 const createEventOfferItemTemplate = (offer) => {
@@ -66,9 +66,9 @@ export class EventOffer {
 
   getTemplate() {
     switch (this._type) {
-      case OfferListType.CURRENT_SHORT_LIST:
+      case OfferListType.SHORT_TEXT_LIST:
         return createEventShortOfferListTemplate(this._eventOffers);
-      case OfferListType.CURRENT_FULL_LIST:
+      case OfferListType.FULL_OPTION_LIST:
         return createAvailableOfferListTemplate(this._eventOffers);
       default:
         return ``;

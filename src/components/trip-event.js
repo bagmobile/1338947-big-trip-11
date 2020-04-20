@@ -6,7 +6,7 @@ import {createElement} from "../dom-util.js";
 const createEventItemTemplate = (tripEvent) => {
   const {title, icon, startDateTime, endDateTime, duration, price, offers} = tripEvent;
   const [start, end] = [getShortFormatTime(startDateTime), getShortFormatTime(endDateTime)];
-  const offerList = new EventOfferComponent(offers, OfferListType.CURRENT_SHORT_LIST).getTemplate();
+  const offerList = new EventOfferComponent(offers, OfferListType.SHORT_TEXT_LIST).getTemplate();
   const rollupBtn = new RollupBtnComponent().getTemplate();
 
   return (`<li class="trip-events__item">

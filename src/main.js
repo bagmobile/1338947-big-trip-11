@@ -11,7 +11,7 @@ import {getEvents, prepareEventsByDays} from "./data/trip-event.js";
 import {TripEvent as TripEventComponent} from "./components/trip-event.js";
 import {TripNoEvent as TripNoEventElement} from "./components/trip-no-event";
 import {TripDayListType, TripDay as TripDayComponent} from "./components/trip-day.js";
-import {EventEditType, EditEvent as EditEventComponent} from "./components/trip-edit-event.js";
+import {EditEvent as EditEventComponent} from "./components/trip-edit-event.js";
 
 
 const events = getEvents();
@@ -30,10 +30,12 @@ renderComponent(headerFilterElement, new FilterComponent(getFilter()).getElement
 
 const renderTripEventItem = (container, tripEvent) => {
   const eventItemComponent = new TripEventComponent(tripEvent).getElement();
-  const editEventComponent = new EditEventComponent(tripEvent, EventEditType.EVENT_EDIT_EXISTS).getElement();
+  const editEventComponent = new EditEventComponent(tripEvent).getElement();
 
-  editEventComponent.querySelector(`form`).addEventListener(`click`, () => {});
-  editEventComponent.querySelector(`form`).addEventListener(`submit`, () => {});
+  editEventComponent.querySelector(`form`).addEventListener(`click`, () => {
+  });
+  editEventComponent.querySelector(`form`).addEventListener(`submit`, () => {
+  });
 
   const replaceEventToEdit = () => {
     container.replaceChild(editEventComponent, eventItemComponent);
