@@ -1,5 +1,8 @@
+import {createElement} from "../dom-util.js";
+
 const createSortingElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
+  const checked = isChecked ? `checked` : ``;
 
   if (isHeader) {
     return (`<span class="trip-sort__item  trip-sort__item--${name}">${name}</span>`);
@@ -12,17 +15,41 @@ const createSortingElement = (sort, isChecked) => {
               type="radio"
               name="trip-sort"
               value="sort-${name}"
-              ${isChecked ? `checked` : ``}
+              ${checked}
               >
               <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-${name}">
                 ${name}
               </label>
             </div>`);
 };
-export const createSortTemplate = (sort) => {
-  const sortElements = sort.map((sorting, index) => createSortingElement(sorting, index === 1)).join(`\n`);
+const createSortTemplate = (sort) => {
+  const sortList = sort.map((item, index) => createSortingElement(item, index === 1)).join(`\n`);
 
   return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-            ${sortElements}
+            ${sortList}
           </form>`);
 };
+
+export class Sort {
+
+  constructor(sort) {
+    this._sort = sort;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortTemplate(this._sort);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,17 +1,17 @@
-import {createElement} from "../../dom-util.js";
+import {createElement} from "../dom-util.js";
 
-const createSaveButtonTemplate = () => {
-  return (`<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>`);
+const createTripNoEventTemplate = () => {
+  return (`<p class="trip-events__msg">Click New Event to create your first point</p>`);
 };
 
-export class SaveBtn {
+export class TripNoEvent {
 
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createSaveButtonTemplate();
+    return createTripNoEventTemplate();
   }
 
   getElement() {
@@ -26,3 +26,4 @@ export class SaveBtn {
     this._element = null;
   }
 }
+

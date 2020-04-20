@@ -1,66 +1,27 @@
-import {createAvailableOfferListTemplate} from "./event-offer";
-import {createEventDestinationTemplate} from "./event-destination";
-import {createSaveButtonTemplate} from "./form/save-btn";
-import {createDeleteButtonTemplate} from "./form/delete-btn";
-import {createFavoriteButtonTemplate} from "./form/favorite-btn";
-import {createRollupBtnTemplate} from "./form/rollup-btn";
-// import {createCancelButtonTemplate} from "./form/cancel-btn";
-import {getEventTypes, getEventTowns} from "../data/trip-event";
-import {getShortFormatDate} from "../util";
+import {getShortFormatDate} from "../util.js";
+import {createElement} from "../dom-util.js";
+import {TripTown as TripTownComponent} from "./trip-town.js";
+import {EventType as EventTypeComponent} from "./event-type.js";
+import {EventDetails as EventDetailsComponent} from "./event-details.js";
+import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
+import {SaveBtn as SaveBtnComponent} from "./form/save-btn.js";
+import {DeleteBtn as DeleteBtnComponent} from "./form/delete-btn.js";
+import {FavoriteBtn as FavoriteBtnComponent} from "./form/favorite-btn.js";
+import {CancelBtn as CancelBtnComponent} from "./form/cancel-btn.js";
 
-const createEventTypeItemTemplate = (name, isChecked) => {
-  const lowerName = name.toLowerCase();
-  const checked = isChecked ? `checked` : ``;
-  return (`<div class="event__type-item">
-    <input id="event-type-${lowerName}-1"
-    class="event__type-input  visually-hidden"
-    type="radio"
-    name="event-type"
-    value="${lowerName}"
-    ${checked}>
-    <label class="event__type-label  event__type-label--${lowerName}" for="event-type-${lowerName}-1">${name}</label>
-</div>`);
-};
+const createEditEventTemplate = (tripEvent, isNew) => {
+  const {icon, startDateTime, endDateTime, price, offers, isFavorite} = tripEvent;
+  const startTime = getShortFormatDate(startDateTime);
+  const endTime = getShortFormatDate(endDateTime);
+  const tripTownList = new TripTownComponent(tripEvent).getTemplate();
+  const eventTypeList = new EventTypeComponent(tripEvent).getTemplate();
+  const eventDetails = !isNew ? new EventDetailsComponent(offers).getTemplate() : ``;
+  const rollupBtn = !isNew ? new RollupBtnComponent().getTemplate() : ``;
+  const saveBtn = new SaveBtnComponent().getTemplate();
+  const cancelBtn = isNew ? new CancelBtnComponent().getTemplate() : ``;
+  const deleteBtn = !isNew ? new DeleteBtnComponent().getTemplate() : ``;
+  const favoriteBtn = !isNew ? new FavoriteBtnComponent(isFavorite).getTemplate() : ``;
 
-const createEventTypeListTemplate = (event) => {
-  const [transportTypes, activityTypes] = getEventTypes();
-  const transferList = (transportTypes).map((typeEvent) => createEventTypeItemTemplate(typeEvent, event.type === typeEvent)).join(`\n`);
-  const activityList = (activityTypes).map((typeEvent) => createEventTypeItemTemplate(typeEvent, event.type === typeEvent)).join(`\n`);
-  return (`<div class="event__type-list">
-                          <fieldset class="event__type-group">
-                            <legend class="visually-hidden">Transfer</legend>
-                            ${transferList}
-                            </fieldset>
-                          <fieldset class="event__type-group">
-                            <legend class="visually-hidden">Activity</legend>
-                            ${activityList}
-                          </fieldset>
-                        </div>`);
-};
-
-const createEventDestinationItemTemplate = (town) => {
-  return (`<option value="${town}"></option>`);
-};
-
-const createEventDestinationListTemplate = (evt) => {
-  const towns = getEventTowns();
-  towns.splice(towns.indexOf(evt.town), 1);
-  const destinationList = towns.map((town) => createEventDestinationItemTemplate(town));
-  return (` <div class="event__field-group  event__field-group--destination">
-                        <label class="event__label  event__type-output" for="event-destination-1">
-                          ${evt.type} ${evt.routePrefix}
-                        </label>
-                        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${evt.town}" list="destination-list-1">
-                        <datalist id="destination-list-1">
-                          ${destinationList}
-                        </datalist>
-                      </div>`);
-};
-
-export const createEditEventTemplate = (tripEvent) => {
-  const {icon, startDateTime, endDateTime, price, offers, destination, isFavorite} = tripEvent;
-  const start = getShortFormatDate(startDateTime);
-  const end = getShortFormatDate(endDateTime);
   return (`<li class="trip-events__item">
                   <form class="event  event--edit" action="#" method="post">
                     <header class="event__header">
@@ -70,21 +31,19 @@ export const createEditEventTemplate = (tripEvent) => {
                           <img class="event__type-icon" width="17" height="17" src="img/icons/${icon}" alt="Event type icon">
                         </label>
                         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-                        ${createEventTypeListTemplate(tripEvent)}
+                        ${eventTypeList}
                       </div>
-
-                        ${createEventDestinationListTemplate(tripEvent)}
-
+                        ${tripTownList}
                       <div class="event__field-group  event__field-group--time">
                         <label class="visually-hidden" for="event-start-time-1">
                           From
                         </label>
-                        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}">
+                        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
                         &mdash;
                         <label class="visually-hidden" for="event-end-time-1">
                           To
                         </label>
-                        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${end}">
+                        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
                       </div>
 
                       <div class="event__field-group  event__field-group--price">
@@ -95,16 +54,39 @@ export const createEditEventTemplate = (tripEvent) => {
                         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
                       </div>
 
-                    ${createSaveButtonTemplate()}
-                    ${createDeleteButtonTemplate()}
-                    ${createFavoriteButtonTemplate(isFavorite)}
-                    ${createRollupBtnTemplate()}
+                    ${saveBtn}
+                    ${deleteBtn}
+                    ${cancelBtn}
+                    ${favoriteBtn}
+                    ${rollupBtn}
                     </header>
 
-                    <section class="event__details">
-                    ${createAvailableOfferListTemplate(offers)}
-                    ${createEventDestinationTemplate(destination)}
-                    </section>
+                    ${eventDetails}
                   </form>
                 </li>`);
 };
+
+export class EditEvent {
+
+  constructor(tripEvent, isNew = false) {
+    this._tripEvent = tripEvent;
+    this._isNew = isNew;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditEventTemplate(this._tripEvent, this._isNew);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

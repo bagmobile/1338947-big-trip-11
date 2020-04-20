@@ -4,7 +4,7 @@ import {
   getEventTypes as getTypes,
   getEventTowns as getTowns,
   getEventOffers as getOffers,
-} from "../mock/event-mock";
+} from "../mock/event-mock.js";
 
 const routePrefixes = [`to`, `in`];
 const durationSigns = [`D`, `H`, `M`];

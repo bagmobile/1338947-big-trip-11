@@ -1,4 +1,6 @@
-export const createFavoriteButtonTemplate = (isChecked) => {
+import {createElement} from "../../dom-util.js";
+
+const createFavoriteButtonTemplate = (isChecked) => {
   const checked = isChecked ? `checked` : ``;
 
   return (`<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${checked}>
@@ -10,3 +12,27 @@ export const createFavoriteButtonTemplate = (isChecked) => {
 </label>
 `);
 };
+
+export class FavoriteBtn {
+
+  constructor(isChecked) {
+    this._isChecked = isChecked;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFavoriteButtonTemplate(this._isChecked);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

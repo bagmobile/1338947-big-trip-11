@@ -1,12 +1,13 @@
-import * as util from "../util";
+import * as util from "../util.js";
 
 const MAX_EVENT_COUNT = 15;
-const MAX_DESTINATION_SENTENSE = 5;
+const MAX_DESTINATION_SENTENCE = 5;
 const MAX_DESTINATION_PHOTO = 7;
 const TRIP_RANGE_PRICE = [100, 500];
 
 const eventTypes = [[`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`], [`Check-in`, `Sightseeing`, `Restaurant`]];
 
+// noinspection SpellCheckingInspection,SpellCheckingInspection
 const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`];
 
 const offers = [
@@ -17,6 +18,7 @@ const offers = [
   [`train`, `Travel by train`, 40],
 ];
 
+// noinspection SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection
 const destinations = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -56,13 +58,13 @@ const setDateTime = (tripEvent) => {
 const getOffers = () => {
   return offers.map((offer) => {
     const [type, name, price] = offer;
-    return {type, name, price, checked: 0};
+    return {type, name, price, isChecked: 0};
   });
 };
 
 const getDestination = () => {
   return {
-    description: destinations.slice(util.getRandomNumber(0, 4), MAX_DESTINATION_SENTENSE).join(`\n`),
+    description: destinations.slice(util.getRandomNumber(0, 4), MAX_DESTINATION_SENTENCE).join(`\n`),
     photos: (new Array(MAX_DESTINATION_PHOTO))
       .fill({})
       .map(() => ({src: `http://picsum.photos/248/152?r=${util.getRandomNumber(0, 500)}`})),

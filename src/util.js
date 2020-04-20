@@ -52,3 +52,11 @@ export const getShortFormatTime = (dateTime) => {
 export const getDayDateFormat = (dateTime) => {
   return dateTime.toString().slice(dateTime.toString().indexOf(` `) + 1, 10);
 };
+
+export const getPeriodShortFormat = (startDateTime, endDateTime) => {
+  const shortStartDate = getDayDateFormat(startDateTime);
+  return [
+    shortStartDate,
+    getDayDateFormat(endDateTime).replace(shortStartDate.toString().slice(0, 3), ``),
+  ];
+};
