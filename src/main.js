@@ -32,9 +32,8 @@ const renderTripEventItem = (container, tripEvent) => {
   const eventItemComponent = new TripEventComponent(tripEvent).getElement();
   const editEventComponent = new EditEventComponent(tripEvent).getElement();
 
-  editEventComponent.querySelector(`form`).addEventListener(`click`, () => {
-  });
   editEventComponent.querySelector(`form`).addEventListener(`submit`, () => {
+    replaceEditToEvent();
   });
 
   const replaceEventToEdit = () => {
