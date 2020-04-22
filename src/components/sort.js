@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createSortingElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
@@ -30,26 +30,15 @@ const createSortTemplate = (sort) => {
           </form>`);
 };
 
-export class Sort {
+export class Sort extends AbstractComponent {
 
   constructor(sort) {
+    super();
     this._sort = sort;
-    this._element = null;
   }
 
   getTemplate() {
     return createSortTemplate(this._sort);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

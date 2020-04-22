@@ -1,7 +1,7 @@
-import {OfferListType, EventOffer as EventOfferComponent} from "./event-offer.js";
+import AbstractComponent from "./abstract-component.js";
+import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
 import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
-import {getShortFormatTime} from "../util.js";
-import {createElement} from "../dom-util.js";
+import {getShortFormatTime} from "../utils/util.js";
 
 const createEventItemTemplate = (tripEvent) => {
   const {title, icon, startDateTime, endDateTime, duration, price, offers} = tripEvent;
@@ -34,26 +34,18 @@ const createEventItemTemplate = (tripEvent) => {
                 </li>`);
 };
 
-export class TripEvent {
+export class TripEvent extends AbstractComponent {
 
   constructor(tripEvent) {
+    super();
     this._tripEvent = tripEvent;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventItemTemplate(this._tripEvent);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setRollupBtnClickHandler(cb) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, cb);
   }
 }

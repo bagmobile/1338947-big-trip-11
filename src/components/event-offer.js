@@ -1,6 +1,6 @@
+import AbstractComponent from "./abstract-component.js";
 import {MAX_COUNT_OFFER_SHOW} from "../config.js";
 import {getEventOffers} from "../data/trip-event.js";
-import {createElement} from "../dom-util.js";
 
 export const OfferListType = {
   SHORT_TEXT_LIST: `shortTextList`,
@@ -56,12 +56,12 @@ export const createAvailableOfferListTemplate = (eventOffers) => {
 </section>`);
 };
 
-export class EventOffer {
+export class EventOffer extends AbstractComponent {
 
   constructor(eventOffers, type) {
+    super();
     this._eventOffers = eventOffers;
     this._type = type;
-    this._element = null;
   }
 
   getTemplate() {
@@ -75,15 +75,4 @@ export class EventOffer {
     }
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

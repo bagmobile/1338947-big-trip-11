@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
 
 const createEventDetailsTemplate = (offers) => {
@@ -8,26 +8,14 @@ const createEventDetailsTemplate = (offers) => {
                     </section>`);
 };
 
-export class EventDetails {
+export class EventDetails extends AbstractComponent {
 
   constructor(offers) {
+    super();
     this._offers = offers;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventDetailsTemplate(this._offers);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

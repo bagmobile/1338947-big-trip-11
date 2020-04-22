@@ -1,5 +1,5 @@
-import {getShortFormatDate} from "../util.js";
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
+import {getShortFormatDate} from "../utils/util.js";
 import {TripTown as TripTownComponent} from "./trip-town.js";
 import {EventType as EventTypeComponent} from "./event-type.js";
 import {EventDetails as EventDetailsComponent} from "./event-details.js";
@@ -66,27 +66,24 @@ const createEditEventTemplate = (tripEvent, isNew) => {
                 </li>`);
 };
 
-export class EditEvent {
+export class EditEvent extends AbstractComponent {
 
   constructor(tripEvent, isNew = false) {
+    super();
     this._tripEvent = tripEvent;
     this._isNew = isNew;
-    this._element = null;
   }
 
   getTemplate() {
     return createEditEventTemplate(this._tripEvent, this._isNew);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  setSubmitHandler(cb) {
+    this.getElement().querySelector(`form`).addEventListener(`submit`, cb);
   }
 
-  removeElement() {
-    this._element = null;
+  setRollupBtnClickHandler(cb) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, cb);
   }
+
 }

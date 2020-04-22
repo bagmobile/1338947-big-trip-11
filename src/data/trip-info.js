@@ -1,4 +1,4 @@
-import {getPeriodShortFormat} from "../util.js";
+import {getPeriodShortFormat} from "../utils/util.js";
 
 const TITLE_COUNT_TOWN = 3;
 

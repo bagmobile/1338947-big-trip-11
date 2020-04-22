@@ -1,4 +1,4 @@
-import * as util from "../util.js";
+import * as util from "../utils/util.js";
 
 const MAX_EVENT_COUNT = 15;
 const MAX_DESTINATION_SENTENCE = 5;
@@ -7,7 +7,6 @@ const TRIP_RANGE_PRICE = [100, 500];
 
 const eventTypes = [[`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`], [`Check-in`, `Sightseeing`, `Restaurant`]];
 
-// noinspection SpellCheckingInspection,SpellCheckingInspection
 const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`];
 
 const offers = [
@@ -18,7 +17,6 @@ const offers = [
   [`train`, `Travel by train`, 40],
 ];
 
-// noinspection SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection,SpellCheckingInspection
 const destinations = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
