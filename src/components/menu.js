@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createMenuTab = (tab, isActive) => {
   const {name, url} = tab;
@@ -13,26 +13,15 @@ const createMenuTemplate = (menu) => {
   return (`<nav class="trip-controls__trip-tabs  trip-tabs">${menuTabs}</nav>`);
 };
 
-export class Menu {
+export class Menu extends AbstractComponent {
 
   constructor(menu) {
+    super();
     this._menu = menu;
-    this._element = null;
   }
 
   getTemplate() {
     return createMenuTemplate(this._menu);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

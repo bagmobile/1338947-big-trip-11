@@ -1,28 +1,13 @@
-import {createElement} from "../../dom-util.js";
+import AbstractComponent from "../abstract-component.js";
 
 const createCancelButtonTemplate = () => {
   return (`<button class="event__reset-btn" type="reset">Cancel</button>`);
 };
 
-export class CancelBtn {
-
-  constructor() {
-    this._element = null;
-  }
+export class CancelBtn extends AbstractComponent {
 
   getTemplate() {
     return createCancelButtonTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

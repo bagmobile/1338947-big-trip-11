@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createPhotoItemTemplate = (photo) => {
   const {src} = photo;
@@ -24,27 +24,16 @@ const createEventDestinationTemplate = (destination) => {
 `);
 };
 
-export class EventDestination {
+export class EventDestination extends AbstractComponent {
 
   constructor(destination) {
+    super();
     this._destination = destination;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventDestinationTemplate(this._destination);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
 

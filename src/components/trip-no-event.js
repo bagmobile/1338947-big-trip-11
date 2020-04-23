@@ -1,29 +1,14 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createTripNoEventTemplate = () => {
   return (`<p class="trip-events__msg">Click New Event to create your first point</p>`);
 };
 
-export class TripNoEvent {
-
-  constructor() {
-    this._element = null;
-  }
+export class TripNoEvent extends AbstractComponent {
 
   getTemplate() {
     return createTripNoEventTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
 

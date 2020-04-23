@@ -1,5 +1,5 @@
-import {getDayDateFormat} from "../util.js";
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
+import {getDayDateFormat} from "../utils/util.js";
 
 const createDayListTemplate = (list) => {
 
@@ -36,7 +36,6 @@ const createEventListTemplate = (tripEvents) => {
   return (`<ul class="trip-events__list">${eventList}</ul>`);
 };
 
-
 const getDefaultListTemplate = (tripEvents) => {
   const eventList = createDayItemTemplate(createEventListTemplate(tripEvents));
 
@@ -54,16 +53,16 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
 };
 
 export const TripDayListType = {
-  LIST_DEFAULT: 1,
-  LIST_GROUP: 2,
+  LIST_DEFAULT: `default`,
+  LIST_GROUP: `group`,
 };
 
-export class TripDay {
+export class TripDay extends AbstractComponent {
 
   constructor(tripEvents, type) {
+    super();
     this._tripEvents = tripEvents;
     this._type = type;
-    this._element = null;
   }
 
   getTemplate() {
@@ -77,15 +76,4 @@ export class TripDay {
     }
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

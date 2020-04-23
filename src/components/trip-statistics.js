@@ -1,4 +1,6 @@
-export const createTripStatisticsTemplate = () => {
+import AbstractComponent from "./abstract-component.js";
+
+const createTripStatisticsTemplate = () => {
   return (`<section class="statistics">
           <h2 class="visually-hidden">Trip statistics</h2>
 
@@ -15,3 +17,11 @@ export const createTripStatisticsTemplate = () => {
           </div>
         </section>`);
 };
+
+export class TripStatistics extends AbstractComponent {
+
+  getTemplate() {
+    return createTripStatisticsTemplate();
+  }
+
+}

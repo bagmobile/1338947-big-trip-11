@@ -1,4 +1,4 @@
-import {createElement} from "../../dom-util.js";
+import AbstractComponent from "../abstract-component.js";
 
 const createFavoriteButtonTemplate = (isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -13,26 +13,15 @@ const createFavoriteButtonTemplate = (isChecked) => {
 `);
 };
 
-export class FavoriteBtn {
+export class FavoriteBtn extends AbstractComponent {
 
   constructor(isChecked) {
+    super();
     this._isChecked = isChecked;
-    this._element = null;
   }
 
   getTemplate() {
     return createFavoriteButtonTemplate(this._isChecked);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

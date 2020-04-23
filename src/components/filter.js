@@ -1,4 +1,4 @@
-import {createElement} from "../dom-util.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createFilterElement = (filter, isChecked) => {
   const {name} = filter;
@@ -26,26 +26,15 @@ const createFilterTemplate = (filters) => {
 </form>`);
 };
 
-export class Filter {
+export class Filter extends AbstractComponent {
 
   constructor(filter) {
+    super();
     this._filter = filter;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilterTemplate(this._filter);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

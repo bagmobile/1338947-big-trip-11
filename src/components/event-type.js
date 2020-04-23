@@ -1,5 +1,5 @@
+import AbstractComponent from "./abstract-component.js";
 import {getEventTypes} from "../data/trip-event.js";
-import {createElement} from "../dom-util.js";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
   const lowerName = name.toLowerCase();
@@ -34,26 +34,15 @@ const createEventTypeListTemplate = (tripEvent) => {
 `);
 };
 
-export class EventType {
+export class EventType extends AbstractComponent {
 
   constructor(tripEvent) {
+    super();
     this._tripEvent = tripEvent;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventTypeListTemplate(this._tripEvent);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

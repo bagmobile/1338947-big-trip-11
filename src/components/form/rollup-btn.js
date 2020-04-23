@@ -1,4 +1,4 @@
-import {createElement} from "../../dom-util.js";
+import AbstractComponent from "../abstract-component.js";
 
 const createRollupBtnTemplate = () => {
   return (`<button class="event__rollup-btn" type="button">
@@ -6,25 +6,10 @@ const createRollupBtnTemplate = () => {
 </button>`);
 };
 
-export class RollupBtn {
-
-  constructor() {
-    this._element = null;
-  }
+export class RollupBtn extends AbstractComponent {
 
   getTemplate() {
     return createRollupBtnTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
