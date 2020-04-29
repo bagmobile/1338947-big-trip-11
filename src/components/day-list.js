@@ -36,7 +36,7 @@ const createEventListTemplate = (tripEvents) => {
   return (`<ul class="trip-events__list">${eventList}</ul>`);
 };
 
-const getDefaultListTemplate = (tripEvents) => {
+const getOrderedListTemplate = (tripEvents) => {
   const eventList = createDayItemTemplate(createEventListTemplate(tripEvents));
 
   return createDayListTemplate(eventList);
@@ -52,14 +52,14 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
   return createDayListTemplate(eventList);
 };
 
-export const TripDayListType = {
-  LIST_DEFAULT: `default`,
-  LIST_GROUP: `group`,
+export const DayListType = {
+  ORDERED: `ordered`,
+  GROUP: `group`,
 };
 
-export class TripDay extends AbstractComponent {
+export class DayList extends AbstractComponent {
 
-  constructor(tripEvents, type) {
+  constructor(tripEvents, type = DayListType.GROUP) {
     super();
     this._tripEvents = tripEvents;
     this._type = type;
@@ -67,13 +67,24 @@ export class TripDay extends AbstractComponent {
 
   getTemplate() {
     switch (this._type) {
-      case TripDayListType.LIST_DEFAULT:
-        return getDefaultListTemplate(this._tripEvents);
-      case TripDayListType.LIST_GROUP:
-        return getGroupByDayListTemplate(this._tripEvents);
+      case DayListType.ORDERED:
+        return getOrderedListTemplate(this._tripEvents);
+      case DayListType.GROUP:
+        return getGroupByDayListTemplate(this.prepareEventsByDays(this._tripEvents));
       default:
         return ``;
     }
+  }
+
+  prepareEventsByDays(tripEvents) {
+    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(elem.endDateTime.toISOString()), new Set())];
+    return uniqueDays.reduce((acc, day, index) => {
+      acc.push([{
+        order: ++index,
+        dateTime: new Date(day),
+      }, tripEvents.filter((evt) => evt.endDateTime.toISOString() === day)]);
+      return acc;
+    }, []);
   }
 
 }
