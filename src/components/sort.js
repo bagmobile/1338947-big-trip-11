@@ -1,5 +1,13 @@
 import AbstractComponent from "./abstract-component.js";
 
+export const SortType = {
+  DAY: `day`,
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+  OFFERS: `offers`,
+};
+
 const createSortingElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
   const checked = isChecked ? `checked` : ``;
@@ -22,8 +30,9 @@ const createSortingElement = (sort, isChecked) => {
               </label>
             </div>`);
 };
-const createSortTemplate = (sort) => {
-  const sortList = sort.map((item, index) => createSortingElement(item, index === 1)).join(`\n`);
+
+const createSortTemplate = (sort, sortType) => {
+  const sortList = sort.map((item) => createSortingElement(item, item.name === sortType)).join(`\n`);
 
   return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             ${sortList}
@@ -32,13 +41,63 @@ const createSortTemplate = (sort) => {
 
 export class Sort extends AbstractComponent {
 
-  constructor(sort) {
+  constructor() {
     super();
-    this._sort = sort;
+    this._currenSortType = SortType.EVENT;
   }
 
   getTemplate() {
-    return createSortTemplate(this._sort);
+    return createSortTemplate(this.getSort(), this._currenSortType);
+  }
+
+  getSort() {
+    return Object.values(SortType).map((sortType) => ({name: sortType, isHeader: this.isHeader(sortType)}));
+  }
+
+  getHeaders() {
+    return [SortType.DAY, SortType.OFFERS];
+  }
+
+  isHeader(sortType) {
+    return this.getHeaders().includes(sortType);
+  }
+
+  setSortTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (!evt.target.className.match(`trip-sort__btn`)) {
+        return;
+      }
+
+      const sortType = evt.target.previousElementSibling.id.replace(`sort-`, ``);
+
+      if (this._currenSortType === sortType) {
+        return;
+      }
+
+      this._currenSortType = sortType;
+
+      handler(this._currenSortType);
+    });
+  }
+
+  getSortedEvents(tripEvents, sortType) {
+
+    switch (sortType) {
+      case SortType.TIME:
+        return tripEvents.sort(function (a, b) {
+          return (b.endDateTime.getTime() - b.startDateTime.getTime()) - (a.endDateTime.getTime() - a.startDateTime.getTime());
+        });
+      case SortType.PRICE:
+        return tripEvents.sort(function (a, b) {
+          return (b.price - a.price);
+        });
+      default :
+        return tripEvents.sort(function (a, b) {
+          return a.startDateTime.getTime() - b.startDateTime.getTime();
+        });
+    }
   }
 
 }

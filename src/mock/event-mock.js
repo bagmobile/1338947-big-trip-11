@@ -48,7 +48,7 @@ const generateType = () => {
 };
 
 const setDateTime = (tripEvent) => {
-  const [startDateTime, endDateTime] = (util.getRandomDate(true, 67));
+  const [startDateTime, endDateTime] = (util.getRandomDate(true, util.getRandomNumber(10, 400)));
   tripEvent.startDateTime = startDateTime;
   tripEvent.endDateTime = endDateTime;
 };
