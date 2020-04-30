@@ -4,7 +4,8 @@ import {getEventOffers} from "../data/trip-event.js";
 
 export const OfferListType = {
   SHORT_TEXT_LIST: `shortTextList`,
-  FULL_OPTION_LIST: `fullOptionList`,
+  CHECKED_OPTION_LIST: `fullOptionList`,
+  AVAILABLE_OPTION_LIST: `availableOptionList`,
 };
 
 const createEventOfferItemTemplate = (offer) => {
@@ -26,7 +27,7 @@ export const createEventShortOfferListTemplate = (offers) => {
 </ul>`);
 };
 
-const createAvailableOfferItemTemplate = (offer) => {
+const createCheckedOfferItemTemplate = (offer) => {
   const {type, name, price, isChecked} = offer;
   const checked = isChecked ? `checked` : ``;
 
@@ -41,12 +42,23 @@ const createAvailableOfferItemTemplate = (offer) => {
 </div>`);
 };
 
-export const createAvailableOfferListTemplate = (eventOffers) => {
+const createAvailableOfferListTemplate = () => {
+  const offerList = getEventOffers().map((offer) => createCheckedOfferItemTemplate(offer)).join(`\n`);
+
+  return (`<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">
+        ${offerList}
+    </div>
+</section>`);
+};
+
+const createCheckedOfferListTemplate = (eventOffers) => {
   const offers = getEventOffers().map((offer) => {
     offer.isChecked = eventOffers.some((eventOffer) => eventOffer.type === offer.type);
     return offer;
   });
-  const offerList = offers.map((offer) => createAvailableOfferItemTemplate(offer)).join(`\n`);
+  const offerList = offers.map((offer) => createCheckedOfferItemTemplate(offer)).join(`\n`);
 
   return (`<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -68,8 +80,10 @@ export class EventOffer extends AbstractComponent {
     switch (this._type) {
       case OfferListType.SHORT_TEXT_LIST:
         return createEventShortOfferListTemplate(this._eventOffers);
-      case OfferListType.FULL_OPTION_LIST:
-        return createAvailableOfferListTemplate(this._eventOffers);
+      case OfferListType.CHECKED_OPTION_LIST:
+        return createCheckedOfferListTemplate(this._eventOffers);
+      case OfferListType.AVAILABLE_OPTION_LIST:
+        return createAvailableOfferListTemplate();
       default:
         return ``;
     }

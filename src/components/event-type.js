@@ -1,25 +1,28 @@
 import AbstractComponent from "./abstract-component.js";
 import {getEventTypes} from "../data/trip-event.js";
+import * as util from "../utils/utils.js";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
-  const lowerName = name.toLowerCase();
+  const lowerName = util.upFirst(name);
   const checked = isChecked ? `checked` : ``;
 
   return (`<div class="event__type-item">
-    <input id="event-type-${lowerName}-1"
+    <input id="event-type-${name}-1"
     class="event__type-input  visually-hidden"
     type="radio"
     name="event-type"
-    value="${lowerName}"
+    value="${name}"
     ${checked}>
-    <label class="event__type-label  event__type-label--${lowerName}" for="event-type-${lowerName}-1">${name}</label>
+    <label class="event__type-label  event__type-label--${name}" for="event-type-${name}-1">${lowerName}</label>
 </div>`);
 };
 
-const createEventTypeListTemplate = (tripEvent) => {
+const createEventTypeListTemplate = (tripEvent, options) => {
+  const {currentEventType} = options;
   const [transportTypes, activityTypes] = getEventTypes();
-  const transferList = (transportTypes).map((eventType) => createEventTypeItemTemplate(eventType, tripEvent.type === eventType)).join(`\n`);
-  const activityList = (activityTypes).map((eventType) => createEventTypeItemTemplate(eventType, tripEvent.type === eventType)).join(`\n`);
+  const createEventTypeItemHandler = (eventType) => createEventTypeItemTemplate(eventType, currentEventType === eventType);
+  const transferList = transportTypes.map(createEventTypeItemHandler).join(`\n`);
+  const activityList = activityTypes.map(createEventTypeItemHandler).join(`\n`);
 
   return (`<div class="event__type-list">
     <fieldset class="event__type-group">
@@ -41,8 +44,8 @@ export class EventType extends AbstractComponent {
     this._tripEvent = tripEvent;
   }
 
-  getTemplate() {
-    return createEventTypeListTemplate(this._tripEvent);
+  getTemplate(options) {
+    return createEventTypeListTemplate(this._tripEvent, options);
   }
 
 }

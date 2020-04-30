@@ -1,4 +1,4 @@
-import * as util from "../utils/util.js";
+import * as util from "../utils/utils.js";
 import {
   generateEvents,
   getEventTypes as getTypes,
@@ -21,21 +21,11 @@ const tripEvent = {
 };
 
 const getTitle = (evt) => {
-  return `${evt.type} ${getRoutePrefix(evt.type)} ${evt.town}`;
+  return `${util.upFirst(evt.type)} ${getRoutePrefix(evt.type)} ${evt.town}`;
 };
 
 const getIcon = (type) => {
   return `${type.toLowerCase()}.png`;
-};
-
-const getRoutePrefix = (evt) => {
-  let prefix = ``;
-  getTypes().forEach((type, index) => {
-    if (type.includes(evt.type)) {
-      prefix = routePrefixes[index];
-    }
-  });
-  return prefix;
 };
 
 const getDuration = (evt) => {
@@ -48,7 +38,6 @@ const prepareEvent = (evt) => {
   evt.title = getTitle(evt);
   evt.icon = getIcon(evt.type);
   evt.duration = getDuration(evt);
-  evt.routePrefix = getRoutePrefix(evt);
   return evt;
 };
 
@@ -58,21 +47,21 @@ const sortEventsByDay = (tripEvents) => {
   });
 };
 
+export const getRoutePrefix = (eventType) => {
+  let prefix = ``;
+  getTypes().forEach((type, index) => {
+    if (type.includes(eventType)) {
+      prefix = routePrefixes[index];
+    }
+  });
+  return prefix;
+};
+
+
 export const getEvents = () => {
   /* Заглушка на моковые данные*/
   const tripEvents = generateEvents(tripEvent);
   return sortEventsByDay(tripEvents.map((evt) => prepareEvent(evt)));
-};
-
-export const prepareEventsByDays = (events) => {
-  let uniqueDays = [...events.reduce((acc, elem) => acc.add(elem.endDateTime.toISOString()), new Set())];
-  return uniqueDays.reduce((acc, day, index) => {
-    acc.push([{
-      order: ++index,
-      dateTime: new Date(day),
-    }, events.filter((evt) => evt.endDateTime.toISOString() === day)]);
-    return acc;
-  }, []);
 };
 
 export const getEventTypes = () => {

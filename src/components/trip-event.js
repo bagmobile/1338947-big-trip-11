@@ -1,10 +1,10 @@
 import AbstractComponent from "./abstract-component.js";
 import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
 import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
-import {getShortFormatTime} from "../utils/util.js";
+import {getShortFormatTime} from "../utils/utils.js";
 
 const createEventItemTemplate = (tripEvent) => {
-  const {title, icon, startDateTime, endDateTime, duration, price, offers} = tripEvent;
+  const {title, type, startDateTime, endDateTime, duration, price, offers} = tripEvent;
   const [startTime, endTime] = [getShortFormatTime(startDateTime), getShortFormatTime(endDateTime)];
   const offerList = new EventOfferComponent(offers, OfferListType.SHORT_TEXT_LIST).getTemplate();
   const rollupBtn = new RollupBtnComponent().getTemplate();
@@ -12,7 +12,7 @@ const createEventItemTemplate = (tripEvent) => {
   return (`<li class="trip-events__item">
                   <div class="event">
                     <div class="event__type">
-                      <img class="event__type-icon" width="42" height="42" src="img/icons/${icon}" alt="Event type icon">
+                      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                     </div>
                     <h3 class="event__title">${title}</h3>
 
