@@ -1,7 +1,7 @@
 import AbstractComponent from "./abstract-component.js";
 import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
 import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
-import {getShortFormatTime} from "../utils/util.js";
+import {getShortFormatTime} from "../utils/utils.js";
 
 const createEventItemTemplate = (tripEvent) => {
   const {title, type, startDateTime, endDateTime, duration, price, offers} = tripEvent;

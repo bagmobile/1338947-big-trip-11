@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {getDayDateFormat} from "../utils/util.js";
+import {getDayDateFormat} from "../utils/utils.js";
 
 const createDayListTemplate = (list) => {
 

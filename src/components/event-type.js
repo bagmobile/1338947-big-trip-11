@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 import {getEventTypes} from "../data/trip-event.js";
-import * as util from "../utils/util.js";
+import * as util from "../utils/utils.js";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
   const lowerName = util.upFirst(name);

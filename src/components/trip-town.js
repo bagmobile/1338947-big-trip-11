@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 import {getEventTowns, getRoutePrefix} from "../data/trip-event.js";
-import * as util from "../utils/util.js";
+import * as util from "../utils/utils.js";
 
 const createTripTownItemTemplate = (town) => {
   return (`<option value="${town}"></option>`);

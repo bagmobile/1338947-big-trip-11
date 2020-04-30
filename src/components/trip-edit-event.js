@@ -1,4 +1,4 @@
-import {getShortFormatDate} from "../utils/util.js";
+import {getShortFormatDate} from "../utils/utils.js";
 import {TripTown as TripTownComponent} from "./trip-town.js";
 import {EventType as EventTypeComponent} from "./event-type.js";
 import {EventDetails as EventDetailsComponent} from "./event-details.js";
@@ -78,8 +78,8 @@ export class EditEvent extends AbstractSmartComponent {
     this._favoriteBtnClickHandler = null;
     this._currentEventType = tripEvent.type;
     this._currentTown = tripEvent.town;
-    this._isChangeEventType = false;
-    this._isChangeTown = false;
+    this._isEventTypeChanged = false;
+    this._isTownChanged = false;
 
     this._subscribeOnEvents();
   }
@@ -95,15 +95,15 @@ export class EditEvent extends AbstractSmartComponent {
     return createEditEventTemplate(this._tripEvent, this._isNew, {
       currentEventType: this._currentEventType,
       currentTown: this._currentTown,
-      isChangeEventType: this._isChangeEventType,
-      isChangeTown: this._isChangeTown,
+      isEventTypeChanged: this._isEventTypeChanged,
+      isTownChanged: this._isTownChanged,
     });
   }
 
   reset() {
     const tripEvent = this._tripEvent;
-    this._isChangeEventType = false;
-    this._isChangeTown = false;
+    this._isEventTypeChanged = false;
+    this._isTownChanged = false;
     this._currentEventType = tripEvent.type;
     this._currentTown = tripEvent.town;
     this.rerender();
@@ -130,13 +130,13 @@ export class EditEvent extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-group`)
       .forEach((item) => item.addEventListener(`change`, (evt) => {
         this._currentEventType = evt.target.value;
-        this._isChangeEventType = true;
+        this._isEventTypeChanged = true;
         this.rerender();
       }));
 
     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       this._currentTown = evt.target.value;
-      this._isChangeTown = true;
+      this._isTownChanged = true;
       this.rerender();
     });
   }

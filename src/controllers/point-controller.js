@@ -1,11 +1,11 @@
 import {TripEvent as TripEventComponent} from "../components/trip-event.js";
 import {EditEvent as EditEventComponent} from "../components/trip-edit-event.js";
 import {render, RenderPosition, replace} from "../utils/render.js";
-import {isEscEvent} from "../utils/dom-util.js";
+import {isEscEvent} from "../utils/dom-utils.js";
 
 const Mode = {
   DEFAULT: `default`,
-  EDIT: `edit`,
+  EDITING: `editing`,
 };
 
 export default class PointController {
@@ -57,7 +57,7 @@ export default class PointController {
   _replaceEventToEdit() {
     this._onViewChange();
     replace(this._editEventComponent, this._eventComponent);
-    this._mode = Mode.EDIT;
+    this._mode = Mode.EDITING;
   }
 
   _replaceEditToEvent() {

@@ -3,11 +3,11 @@ import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js
 import {EventDestination} from "./event-destination.js";
 
 const createEventDetailsTemplate = (tripEvent, options) => {
-  const {isChangeTown, isChangeEventType} = options;
+  const {isTownChanged, isEventTypeChanged} = options;
   const {offers, destination} = tripEvent;
-  const offerList = new EventOfferComponent(offers, isChangeEventType ? OfferListType.AVAILABLE_OPTION_LIST : OfferListType.CHECKED_OPTION_LIST)
+  const offerList = new EventOfferComponent(offers, isEventTypeChanged ? OfferListType.AVAILABLE_OPTION_LIST : OfferListType.CHECKED_OPTION_LIST)
     .getTemplate();
-  const eventDestination = isChangeTown ? new EventDestination(destination).getTemplate() : ``;
+  const eventDestination = isTownChanged ? new EventDestination(destination).getTemplate() : ``;
 
   return (`<section class="event__details">
                     ${offerList}

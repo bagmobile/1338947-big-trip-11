@@ -10,9 +10,9 @@ const sortTypeToDayListTypeMap = new Map([
   [SortType.PRICE, DayListType.ORDERED],
 ]);
 
-const renderTripEvents = (eventListElement, tripEvents, onDataChange, onViewChange) => {
+const renderTripEvents = (eventsListElement, tripEvents, onDataChange, onViewChange) => {
   return tripEvents.map((tripEvent, index) => {
-    const pointController = new PointController(eventListElement[index], onDataChange, onViewChange);
+    const pointController = new PointController(eventsListElement[index], onDataChange, onViewChange);
 
     pointController.render(tripEvent);
 
@@ -50,8 +50,8 @@ export class TripController {
     this._dayListComponent = new DayListComponent(tripEvents, this._currentDayListType);
     render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
 
-    const eventListElement = this._dayListComponent.getElement().querySelectorAll(`.trip-events__item`);
-    this._showedPointControllers = renderTripEvents(eventListElement, tripEvents, this._onDataChange, this._onViewChange);
+    const eventsListElement = this._dayListComponent.getElement().querySelectorAll(`.trip-events__item`);
+    this._showedPointControllers = renderTripEvents(eventsListElement, tripEvents, this._onDataChange, this._onViewChange);
 
   }
 
@@ -60,13 +60,13 @@ export class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const index = this._tripEvents.findIndex((it) => it === oldData);
+    const indexOldData = this._tripEvents.findIndex((it) => it === oldData);
 
-    if (index === -1) {
+    if (indexOldData === -1) {
       return;
     }
-    this._tripEvents.splice(index, 1, newData);
-    pointController.render(this._tripEvents[index]);
+    this._tripEvents.splice(indexOldData, 1, newData);
+    pointController.render(this._tripEvents[indexOldData]);
   }
 
   _onSortTypeChange(sortType) {
@@ -76,7 +76,7 @@ export class TripController {
 
     this._currentDayListType = sortTypeToDayListTypeMap.get(sortType);
 
-    this.render(sortedEvents, this._onDataChange);
+    this.render(sortedEvents);
   }
 
 }

@@ -1,4 +1,4 @@
-import * as util from "../utils/util.js";
+import * as util from "../utils/utils.js";
 
 const MAX_EVENT_COUNT = 15;
 const MAX_DESTINATION_SENTENCE = 5;

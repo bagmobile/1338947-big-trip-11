@@ -1,4 +1,4 @@
-import * as util from "../utils/util.js";
+import * as util from "../utils/utils.js";
 import {
   generateEvents,
   getEventTypes as getTypes,
