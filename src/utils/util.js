@@ -60,3 +60,7 @@ export const getPeriodShortFormat = (startDateTime, endDateTime) => {
     getDayDateFormat(endDateTime).replace(shortStartDate.toString().slice(0, 3), ``),
   ];
 };
+
+export const upFirst = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

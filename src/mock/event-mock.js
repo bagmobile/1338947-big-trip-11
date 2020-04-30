@@ -5,7 +5,7 @@ const MAX_DESTINATION_SENTENCE = 5;
 const MAX_DESTINATION_PHOTO = 7;
 const TRIP_RANGE_PRICE = [100, 500];
 
-const eventTypes = [[`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`], [`Check-in`, `Sightseeing`, `Restaurant`]];
+const eventTypes = [[`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`], [`check-in`, `sightseeing`, `restaurant`]];
 
 const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`];
 

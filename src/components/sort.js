@@ -8,7 +8,7 @@ export const SortType = {
   OFFERS: `offers`,
 };
 
-const createSortingElement = (sort, isChecked) => {
+const createSortElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
   const checked = isChecked ? `checked` : ``;
 
@@ -25,14 +25,14 @@ const createSortingElement = (sort, isChecked) => {
               value="sort-${name}"
               ${checked}
               >
-              <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-${name}">
+              <label class="trip-sort__btn" for="sort-${name}">
                 ${name}
               </label>
             </div>`);
 };
 
 const createSortTemplate = (sort, sortType) => {
-  const sortList = sort.map((item) => createSortingElement(item, item.name === sortType)).join(`\n`);
+  const sortList = sort.map((item) => createSortElement(item, item.name === sortType)).join(`\n`);
 
   return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             ${sortList}
@@ -64,7 +64,6 @@ export class Sort extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
 
       if (!evt.target.className.match(`trip-sort__btn`)) {
         return;

@@ -77,12 +77,12 @@ export class DayList extends AbstractComponent {
   }
 
   prepareEventsByDays(tripEvents) {
-    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(elem.endDateTime.toISOString()), new Set())];
+    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(getDayDateFormat(elem.endDateTime.toISOString())), new Set())];
     return uniqueDays.reduce((acc, day, index) => {
       acc.push([{
         order: ++index,
         dateTime: new Date(day),
-      }, tripEvents.filter((evt) => evt.endDateTime.toISOString() === day)]);
+      }, tripEvents.filter((evt) => getDayDateFormat(evt.endDateTime.toISOString()) === day)]);
       return acc;
     }, []);
   }
