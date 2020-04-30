@@ -2,7 +2,6 @@ import {TripEvent as TripEventComponent} from "../components/trip-event.js";
 import {EditEvent as EditEventComponent} from "../components/trip-edit-event.js";
 import {render, RenderPosition, replace} from "../utils/render.js";
 import {isEscEvent} from "../utils/dom-util.js";
-import {remove} from "../utils/render";
 
 const Mode = {
   DEFAULT: `default`,
@@ -41,7 +40,6 @@ export default class PointController {
     });
 
     this._editEventComponent.setFavoriteBtnClickHandler(() => {
-      remove(this._editEventComponent);
       this._onDataChange(this, tripEvent, Object.assign({}, tripEvent, {
         isFavorite: !tripEvent.isFavorite,
       }));

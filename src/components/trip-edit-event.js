@@ -130,12 +130,13 @@ export class EditEvent extends AbstractSmartComponent {
     element.querySelectorAll(`.event__type-group`)
       .forEach((item) => item.addEventListener(`change`, (evt) => {
         this._currentEventType = evt.target.value;
+        this._isChangeEventType = true;
         this.rerender();
       }));
 
     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       this._currentTown = evt.target.value;
-      this._isChangeTown = !this._isChangeTown;
+      this._isChangeTown = true;
       this.rerender();
     });
   }
