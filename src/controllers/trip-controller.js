@@ -9,7 +9,7 @@ import {remove} from "../utils/render";
 import {SortType} from "../components/sort";
 
 const sortTypeToDayListTypeMap = new Map([
-  [SortType.EVENT, DayListType.GROUP],
+  [SortType.EVENT, DayListType.GROUPED],
   [SortType.TIME, DayListType.ORDERED],
   [SortType.PRICE, DayListType.ORDERED],
 ]);
@@ -18,7 +18,7 @@ export class TripController {
   constructor(container) {
     this._container = container;
 
-    this._currentDayListType = DayListType.GROUP;
+    this._currentDayListType = DayListType.GROUPED;
     this._noTasksComponent = new TripNoEventElement();
     this._sortComponent = new SortComponent();
   }

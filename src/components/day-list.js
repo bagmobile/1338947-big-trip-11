@@ -54,12 +54,12 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
 
 export const DayListType = {
   ORDERED: `ordered`,
-  GROUP: `group`,
+  GROUPED: `grouped`,
 };
 
 export class DayList extends AbstractComponent {
 
-  constructor(tripEvents, type = DayListType.GROUP) {
+  constructor(tripEvents, type = DayListType.GROUPED) {
     super();
     this._tripEvents = tripEvents;
     this._type = type;
@@ -69,7 +69,7 @@ export class DayList extends AbstractComponent {
     switch (this._type) {
       case DayListType.ORDERED:
         return getOrderedListTemplate(this._tripEvents);
-      case DayListType.GROUP:
+      case DayListType.GROUPED:
         return getGroupByDayListTemplate(this.prepareEventsByDays(this._tripEvents));
       default:
         return ``;
