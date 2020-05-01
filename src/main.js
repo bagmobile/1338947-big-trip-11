@@ -1,5 +1,4 @@
 import {render, RenderPosition} from "./utils/render.js";
-import {getTripInfo} from "./data/trip-info.js";
 import {TripInfo as TripInfoComponent} from "./components/trip-info.js";
 import {getMenu} from "./data/menu.js";
 import {Menu as MenuComponent} from "./components/menu.js";
@@ -16,7 +15,7 @@ const headerFilterElement = tripControlElement.querySelector(`h2:last-child`);
 
 const tripEvents = getEvents();
 
-render(tripMainElement, new TripInfoComponent(getTripInfo(tripEvents)), RenderPosition.AFTERBEGIN);
+render(tripMainElement, new TripInfoComponent(tripEvents), RenderPosition.AFTERBEGIN);
 render(headerMenuElement, new MenuComponent(getMenu()), RenderPosition.AFTEREND);
 render(headerFilterElement, new FilterComponent(getFilter()), RenderPosition.AFTEREND);
 

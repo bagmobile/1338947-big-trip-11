@@ -8,7 +8,7 @@ const createTripTownItemTemplate = (town) => {
 
 const createTripTownListTemplate = (tripEvent, options) => {
   const {currentEventType, currentTown} = options;
-  const route = `${util.upFirst(currentEventType)} ${getRoutePrefix(currentEventType)}`;
+  const route = `${util.upperFirstChar(currentEventType)} ${getRoutePrefix(currentEventType)}`;
   const towns = getEventTowns();
   towns.slice().splice(towns.indexOf(currentTown), 1);
   const townList = towns.map((town) => createTripTownItemTemplate(town));

@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {getDayDateFormat} from "../utils/utils.js";
+import {formatShortDate} from "../utils/common.js";
 
 const createDayListTemplate = (list) => {
 
@@ -19,8 +19,7 @@ const createDayItemTemplate = (events, day = ``) => {
 };
 
 const createDayInfoTemplate = (day) => {
-  const {order, dateTime} = day;
-  const date = getDayDateFormat(dateTime);
+  const {order, date} = day;
 
   return (`<span class="day__counter">${order}</span>
                 <time class="day__date" datetime="${date}">${date}</time>`);
@@ -77,12 +76,12 @@ export class DayList extends AbstractComponent {
   }
 
   prepareEventsByDays(tripEvents) {
-    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(getDayDateFormat(elem.endDateTime.toISOString())), new Set())];
+    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.endDateTime)), new Set())];
     return uniqueDays.reduce((acc, day, index) => {
       acc.push([{
         order: ++index,
-        dateTime: new Date(day),
-      }, tripEvents.filter((evt) => getDayDateFormat(evt.endDateTime.toISOString()) === day)]);
+        date: day,
+      }, tripEvents.filter((evt) => formatShortDate(evt.endDateTime) === day)]);
       return acc;
     }, []);
   }
