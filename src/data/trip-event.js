@@ -7,7 +7,6 @@ import {
 } from "../mock/event-mock.js";
 
 const routePrefixes = [`to`, `in`];
-const durationSigns = [`D`, `H`, `M`];
 
 const tripEvent = {
   type: ``,
@@ -20,25 +19,8 @@ const tripEvent = {
   isFavorite: false,
 };
 
-const getTitle = (evt) => {
-  return `${util.upFirst(evt.type)} ${getRoutePrefix(evt.type)} ${evt.town}`;
-};
-
-const getIcon = (type) => {
-  return `${type.toLowerCase()}.png`;
-};
-
-const getDuration = (evt) => {
-  return util.getDiffDate(evt.startDateTime, evt.endDateTime).map((time, index) => {
-    return (time === 0) ? `` : time + durationSigns[index];
-  }).join(` `);
-};
-
-const prepareEvent = (evt) => {
-  evt.title = getTitle(evt);
-  evt.icon = getIcon(evt.type);
-  evt.duration = getDuration(evt);
-  return evt;
+export const getTitle = (evt) => {
+  return `${util.upperFirstChar(evt.type)} ${getRoutePrefix(evt.type)} ${evt.town}`;
 };
 
 const sortEventsByDay = (tripEvents) => {
@@ -61,7 +43,7 @@ export const getRoutePrefix = (eventType) => {
 export const getEvents = () => {
   /* Заглушка на моковые данные*/
   const tripEvents = generateEvents(tripEvent);
-  return sortEventsByDay(tripEvents.map((evt) => prepareEvent(evt)));
+  return sortEventsByDay(tripEvents);
 };
 
 export const getEventTypes = () => {

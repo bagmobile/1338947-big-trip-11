@@ -3,7 +3,7 @@ import {getEventTypes} from "../data/trip-event.js";
 import * as util from "../utils/utils.js";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
-  const lowerName = util.upFirst(name);
+  const lowerName = util.upperFirstChar(name);
   const checked = isChecked ? `checked` : ``;
 
   return (`<div class="event__type-item">

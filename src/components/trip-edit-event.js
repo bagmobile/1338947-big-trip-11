@@ -1,4 +1,3 @@
-import {getShortFormatDate} from "../utils/utils.js";
 import {TripTown as TripTownComponent} from "./trip-town.js";
 import {EventType as EventTypeComponent} from "./event-type.js";
 import {EventDetails as EventDetailsComponent} from "./event-details.js";
@@ -8,13 +7,14 @@ import {DeleteBtn as DeleteBtnComponent} from "./form/delete-btn.js";
 import {FavoriteBtn as FavoriteBtnComponent} from "./form/favorite-btn.js";
 import {CancelBtn as CancelBtnComponent} from "./form/cancel-btn.js";
 import AbstractSmartComponent from "./abstract-start-component.js";
+import {getFlatpickr} from "../utils/common.js";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createEditEventTemplate = (tripEvent, isNew, options) => {
-  const {startDateTime, endDateTime, price, isFavorite} = tripEvent;
+  const {price, isFavorite} = tripEvent;
   const {currentEventType: icon} = options;
 
-  const startTime = getShortFormatDate(startDateTime);
-  const endTime = getShortFormatDate(endDateTime);
   const tripTownList = new TripTownComponent(tripEvent).getTemplate(options);
   const eventTypeList = new EventTypeComponent(tripEvent).getTemplate(options);
   const eventDetails = !isNew ? new EventDetailsComponent(tripEvent).getTemplate(options) : ``;
@@ -40,12 +40,12 @@ const createEditEventTemplate = (tripEvent, isNew, options) => {
                         <label class="visually-hidden" for="event-start-time-1">
                           From
                         </label>
-                        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+                        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
                         &mdash;
                         <label class="visually-hidden" for="event-end-time-1">
                           To
                         </label>
-                        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
+                        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
                       </div>
 
                       <div class="event__field-group  event__field-group--price">
@@ -80,7 +80,10 @@ export class EditEvent extends AbstractSmartComponent {
     this._currentTown = tripEvent.town;
     this._isEventTypeChanged = false;
     this._isTownChanged = false;
+    this._startTimeFlatpickr = null;
+    this._endTimeFlatpickr = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -107,6 +110,12 @@ export class EditEvent extends AbstractSmartComponent {
     this._currentEventType = tripEvent.type;
     this._currentTown = tripEvent.town;
     this.rerender();
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
   }
 
   setSubmitHandler(cb) {
@@ -139,6 +148,19 @@ export class EditEvent extends AbstractSmartComponent {
       this._isTownChanged = true;
       this.rerender();
     });
+  }
+
+  _applyFlatpickr() {
+
+    [this._startTimeFlatpickr, this._endTimeFlatpickr].forEach((flatpickrTime) => {
+      if (flatpickrTime) {
+        flatpickrTime.destroy();
+        flatpickrTime = null;
+      }
+    });
+
+    this._startTimeFlatpickr = getFlatpickr(this._tripEvent.startDateTime, this.getElement().querySelector(`#event-start-time-1`));
+    this._endTimeFlatpickr = getFlatpickr(this._tripEvent.endDateTime, this.getElement().querySelector(`#event-end-time-1`));
   }
 
 }

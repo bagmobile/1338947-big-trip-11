@@ -11,7 +11,7 @@ export const getRandomNumber = (min, max) => {
 export const getRandomDate = (isDouble = false, minute = 0) => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomNumber(0, 8);
+  const diffValue = sign * getRandomNumber(0, 7);
   const diff = targetDate.getDate() + diffValue;
   targetDate.setDate(diff);
   const extDate = new Date(targetDate);
@@ -24,43 +24,6 @@ export const getRandomDate = (isDouble = false, minute = 0) => {
   return targetDate;
 };
 
-export const getDiffDate = (timeStart, timeEnd) => {
-  const mscDiff = timeEnd.getTime() - timeStart.getTime();
-  const dayDiff = mscDiff / 24 / 60 / 60 / 1000;
-  const minDiff = mscDiff / 60 / 1000;
-  const hDiff = mscDiff / 3600 / 1000;
-  const days = Math.trunc(dayDiff);
-  const hours = Math.floor(hDiff) - 24 * days;
-  const minutes = minDiff - 24 * 60 * days - 60 * hours;
-  return [days, hours, minutes];
-};
-
-export const getShortFormatDate = (dateTime) => {
-  let result = dateTime.toISOString();
-  return result.slice(0, result.lastIndexOf(`:`))
-    .replace(`T`, ` `)
-    .split(`-`)
-    .join(`/`)
-    .slice(2);
-};
-
-export const getShortFormatTime = (dateTime) => {
-  let result = dateTime.toISOString();
-  return result.slice(result.indexOf(`T`) + 1, result.lastIndexOf(`:`));
-};
-
-export const getDayDateFormat = (dateTime) => {
-  return dateTime.toString().slice(dateTime.toString().indexOf(` `) + 1, 10);
-};
-
-export const getPeriodShortFormat = (startDateTime, endDateTime) => {
-  const shortStartDate = getDayDateFormat(startDateTime);
-  return [
-    shortStartDate,
-    getDayDateFormat(endDateTime).replace(shortStartDate.toString().slice(0, 3), ``),
-  ];
-};
-
-export const upFirst = (str) => {
+export const upperFirstChar = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
