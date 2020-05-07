@@ -1,20 +1,24 @@
 import * as util from "../utils/utils.js";
+import * as config from "../config.js";
+import {TripEventModel} from "../data/trip-event";
 
-const MAX_EVENT_COUNT = 15;
+const MAX_EVENT_COUNT = 5;
+const MAX_DESTINATION_COUNT = 20;
 const MAX_DESTINATION_SENTENCE = 5;
-const MAX_DESTINATION_PHOTO = 7;
+const MAX_DESTINATION_PHOTO = 3;
+const MAX_OFFER_COUNT = 7;
 const TRIP_RANGE_PRICE = [100, 500];
 
-const eventTypes = [[`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`], [`check-in`, `sightseeing`, `restaurant`]];
-
-const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`];
+const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`, `Moscow`, `Tver`, `Primorsk`];
 
 const offers = [
-  [`luggage`, `Add luggage`, 30],
-  [`comfort`, `Switch to comfort class`, 100],
-  [`meal`, `Add meal`, 15],
-  [`seats`, `Choose seats`, 5],
-  [`train`, `Travel by train`, 40],
+  {title: `Add luggage`, price: 30},
+  {title: `Switch to comfort class`, price: 100},
+  {title: `Add meal`, price: 15},
+  {title: `Choose seats`, price: 5},
+  {title: `Travel by train`, price: 40},
+  {title: `Offer small`, price: 140},
+  {title: `Offer big`, price: 310},
 ];
 
 const destinations = [
@@ -27,11 +31,16 @@ const destinations = [
   `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
   `Sed sed nisi sed augue convallis suscipit in sed felis.`,
   `Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.`,
-  `In rutrum ac purus sit amet tempus.`];
+  `In rutrum ac purus sit amet tempus.`,
+];
 
 
 const getType = () => {
   return generateType();
+};
+
+const getEventTypes = () => {
+  return [...config.tripEventTypes.values()];
 };
 
 const getTown = () => {
@@ -43,69 +52,70 @@ const getPrice = () => {
 };
 
 const generateType = () => {
-  const [transport, activity] = eventTypes;
+  const [transport, activity] = getEventTypes();
   return util.getRandomArrayItem([...transport, ...activity]);
 };
 
-const setDateTime = (tripEvent) => {
-  const [startDateTime, endDateTime] = (util.getRandomDate(true, util.getRandomNumber(10, 400)));
-  tripEvent.startDateTime = startDateTime;
-  tripEvent.endDateTime = endDateTime;
+const getDateTime = () => {
+  return (util.getRandomDate(true, util.getRandomNumber(10, 400)));
 };
 
-const getOffers = () => {
-  return offers.map((offer) => {
-    const [type, name, price] = offer;
-    return {type, name, price, isChecked: 0};
-  });
+const getTripEventOffers = () => {
+  return offers.slice(util.getRandomNumber(0, 3), util.getRandomNumber(0, MAX_OFFER_COUNT));
 };
 
 const getDestination = () => {
   return {
     description: destinations.slice(util.getRandomNumber(0, 4), MAX_DESTINATION_SENTENCE).join(`\n`),
+    name: getTown(),
     photos: (new Array(MAX_DESTINATION_PHOTO))
       .fill({})
-      .map(() => ({src: `http://picsum.photos/248/152?r=${util.getRandomNumber(0, 500)}`})),
+      .map(() => ({
+        src: `http://picsum.photos/248/152?r=${util.getRandomNumber(0, 500)}`,
+        description: `---`,
+      })),
   };
-};
-
-const getRandomOffers = () => {
-  return getOffers().slice(0, util.getRandomNumber(0, offers.length));
 };
 
 const getFavorite = () => {
   return Boolean(Math.floor(util.getRandomNumber(0, 2)));
 };
 
-const generateMockTripEvent = (tripEvent) => {
-  tripEvent.type = getType();
-  tripEvent.town = getTown();
-  tripEvent.price = getPrice();
-  setDateTime(tripEvent);
-  tripEvent.offers = getRandomOffers();
-  tripEvent.destination = getDestination();
-  tripEvent.isFavorite = getFavorite();
-  return tripEvent;
+const generateMockTripEvent = () => {
+  const [startDateTime, endDateTime] = getDateTime();
+  return {
+    id: String(Math.random()),
+    type: getType(),
+    startDateTime,
+    endDateTime,
+    price: getPrice(),
+    offers: getTripEventOffers(),
+    destination: getDestination(),
+    isFavorite: getFavorite(),
+
+  };
 };
 
-export const getEventTypes = () => {
-  return eventTypes;
-};
-
-export const getEventTowns = () => {
-  return towns;
-};
-
-export const getEventOffers = () => {
-  return getOffers();
-};
-
-export const generateEvents = (tripEvent) => {
-
+export const generateEvents = () => {
   return Array(MAX_EVENT_COUNT)
     .fill({})
-    .map(() => Object.assign({}, tripEvent))
-    .map((evt) => generateMockTripEvent(evt));
+    .map(() => new TripEventModel(generateMockTripEvent()));
+};
+
+export const generateDestinations = () => {
+  return towns.map((town) => {
+    return Object.assign(getDestination(), {name: town});
+  });
+};
+
+export const generateTripOffers = () => {
+  const [_to, _in] = [...config.tripEventTypes.values()];
+  return [..._to, ..._in].slice().map((item) => {
+    return {
+      type: item,
+      offers: offers.slice(0, MAX_OFFER_COUNT),
+    };
+  });
 };
 
 

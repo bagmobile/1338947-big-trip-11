@@ -9,6 +9,10 @@ export const formatShortDate = (dateTime) => {
   return moment(dateTime).format(`MMM D`);
 };
 
+export const formatToDefault = (dateTime) => {
+  return moment(dateTime, `DD/MM/YY HH:mm`).format();
+};
+
 export const durationDateTime = (startDateTime, endDateTime) => {
   const diff = moment.duration(moment(endDateTime).diff(moment(startDateTime)));
 

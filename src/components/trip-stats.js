@@ -18,7 +18,7 @@ const createTripStatisticsTemplate = () => {
         </section>`);
 };
 
-export class TripStatistics extends AbstractComponent {
+export class TripStats extends AbstractComponent {
 
   getTemplate() {
     return createTripStatisticsTemplate();

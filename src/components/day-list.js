@@ -1,5 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
-import {formatShortDate} from "../utils/common.js";
+import {DayListType, SortType} from "../config.js";
 
 const createDayListTemplate = (list) => {
 
@@ -51,39 +51,33 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
   return createDayListTemplate(eventList);
 };
 
-export const DayListType = {
-  ORDERED: `ordered`,
-  GROUPED: `grouped`,
-};
-
 export class DayList extends AbstractComponent {
 
-  constructor(tripEvents, type = DayListType.GROUPED) {
+  constructor(tripEventsModel, type) {
     super();
-    this._tripEvents = tripEvents;
+    this._tripEventsModel = tripEventsModel;
     this._type = type;
+  }
+
+  static getType(sortType) {
+    const sortTypeToDayListTypeMap = new Map([
+      [SortType.EVENT, DayListType.GROUPED],
+      [SortType.TIME, DayListType.ORDERED],
+      [SortType.PRICE, DayListType.ORDERED],
+    ]);
+
+    return sortTypeToDayListTypeMap.get(sortType);
   }
 
   getTemplate() {
     switch (this._type) {
       case DayListType.ORDERED:
-        return getOrderedListTemplate(this._tripEvents);
+        return getOrderedListTemplate(this._tripEventsModel.getTripEvents());
       case DayListType.GROUPED:
-        return getGroupByDayListTemplate(this.prepareEventsByDays(this._tripEvents));
+        return getGroupByDayListTemplate(this._tripEventsModel.getGroupByDaysTripEvents());
       default:
         return ``;
     }
-  }
-
-  prepareEventsByDays(tripEvents) {
-    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.endDateTime)), new Set())];
-    return uniqueDays.reduce((acc, day, index) => {
-      acc.push([{
-        order: ++index,
-        date: day,
-      }, tripEvents.filter((evt) => formatShortDate(evt.endDateTime) === day)]);
-      return acc;
-    }, []);
   }
 
 }

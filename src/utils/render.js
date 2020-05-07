@@ -1,3 +1,5 @@
+const HIDDEN_CLASS = `visually-hidden`;
+
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREBEGIN: `beforebegin`,
@@ -7,12 +9,18 @@ export const RenderPosition = {
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
-
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
 
+export const createENodeElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.children;
+};
+
 export const render = (container, component, place) => {
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(component.getElement());
@@ -48,3 +56,12 @@ export const remove = (component) => {
   component.removeElement();
 };
 
+export const show = (element) => {
+  element.classList.remove(HIDDEN_CLASS);
+};
+
+export const hide = (element) => {
+
+  element.classList.add(HIDDEN_CLASS);
+
+};

@@ -1,13 +1,14 @@
 import AbstractComponent from "./abstract-component.js";
 
 const createPhotoItemTemplate = (photo) => {
-  const {src} = photo;
+  const {src, description} = photo;
 
-  return (`<img class="event__photo" src="${src}" alt="Event photo">`);
+  return (`<img class="event__photo" src="${src}" alt="${description}">`);
 };
 
 const createEventDestinationTemplate = (destination) => {
   const {description, photos} = destination;
+
   const photoList = photos.map((photo) => createPhotoItemTemplate(photo)).join(`\n`);
 
   return (`<section class="event__section  event__section--destination">
@@ -26,13 +27,14 @@ const createEventDestinationTemplate = (destination) => {
 
 export class EventDestination extends AbstractComponent {
 
-  constructor(destination) {
+  constructor(tripEvent) {
     super();
-    this._destination = destination;
+    this._tripEvent = tripEvent;
   }
 
   getTemplate() {
-    return createEventDestinationTemplate(this._destination);
+
+    return createEventDestinationTemplate(this._tripEvent.destination);
   }
 
 }
