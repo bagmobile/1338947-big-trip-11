@@ -1,60 +1,61 @@
 import * as util from "../utils/utils.js";
-import {
-  generateEvents,
-  getEventTypes as getTypes,
-  getEventTowns as getTowns,
-  getEventOffers as getOffers,
-} from "../mock/event-mock.js";
+import * as config from "../config.js";
+import moment from "moment";
 
-const routePrefixes = [`to`, `in`];
+export class TripEventModel {
 
-const tripEvent = {
-  type: ``,
-  town: ``,
-  startDateTime: null,
-  endDateTime: null,
-  price: 0,
-  offers: [],
-  destination: {},
-  isFavorite: false,
-};
+  constructor(data) {
+    this.id = data.id;
+    this.type = data.type;
+    this.startDateTime = data.startDateTime;
+    this.endDateTime = data.endDateTime;
+    this.price = data.price;
+    this.offers = data.offers;
+    this.destination = data.destination;
+    this.isFavorite = data.isFavorite;
+  }
+}
 
-export const getTitle = (evt) => {
-  return `${util.upperFirstChar(evt.type)} ${getRoutePrefix(evt.type)} ${evt.town}`;
-};
+export const getDefaultTripEvent = () => {
 
-const sortEventsByDay = (tripEvents) => {
-  return tripEvents.sort(function (a, b) {
-    return a.endDateTime.getTime() - b.endDateTime.getTime();
+  return new TripEventModel({
+    id: String(Math.random()),
+    type: getDefaultTripEventType(),
+    startDateTime: moment(new Date()).toISOString(true),
+    endDateTime: moment(new Date()).toISOString(true),
+    price: 0,
+    offers: [],
+    destination: {
+      description: ``,
+      name: ``,
+      photos: [],
+    },
+    isFavorite: false,
   });
 };
 
-export const getRoutePrefix = (eventType) => {
-  let prefix = ``;
-  getTypes().forEach((type, index) => {
-    if (type.includes(eventType)) {
-      prefix = routePrefixes[index];
+export const getTitle = (tripEvent) => {
+  return `${getRoute(tripEvent.type)} ${tripEvent.destination.name}`;
+};
+
+export const getRoutePrefix = (tripEventType) => {
+  for (const [key, value] of config.tripEventTypes) {
+    if (value.includes(tripEventType)) {
+      return key;
     }
-  });
-  return prefix;
+  }
+  return ``;
 };
 
-
-export const getEvents = () => {
-  /* Заглушка на моковые данные*/
-  const tripEvents = generateEvents(tripEvent);
-  return sortEventsByDay(tripEvents);
+export const getRoute = (eventType) => {
+  return `${util.upperFirstChar(eventType)} ${getRoutePrefix(eventType)}`;
 };
 
-export const getEventTypes = () => {
-  return getTypes();
+export const getTripEventTypes = () => {
+  return [...config.tripEventTypes.values()];
 };
 
-export const getEventTowns = () => {
-  return getTowns();
-};
-
-export const getEventOffers = () => {
-  return getOffers();
+export const getDefaultTripEventType = () => {
+  return getTripEventTypes()[0][0];
 };
 

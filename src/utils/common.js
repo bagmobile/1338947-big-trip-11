@@ -9,6 +9,10 @@ export const formatShortDate = (dateTime) => {
   return moment(dateTime).format(`MMM D`);
 };
 
+export const formatToDefault = (dateTime) => {
+  return moment(dateTime, `DD/MM/YY HH:mm`).format();
+};
+
 export const durationDateTime = (startDateTime, endDateTime) => {
   const diff = moment.duration(moment(endDateTime).diff(moment(startDateTime)));
 
@@ -24,7 +28,7 @@ export const formatDatePeriod = (startDateTime, endDateTime) => {
   ].join(` - `);
 };
 
-export const getFlatpickr = (dateTime, element) => {
+export const getFlatpickr = (dateTime, element, handler) => {
   // noinspection JSValidateTypes
   return flatpickr(element, {
     dateFormat: `d/m/y H:i`,
@@ -33,6 +37,9 @@ export const getFlatpickr = (dateTime, element) => {
     minuteIncrement: 1,
     allowInput: true,
     defaultDate: dateTime || new Date(),
+    onChange: () => {
+      handler();
+    },
   });
 };
 

@@ -1,3 +1,4 @@
+import moment from "moment";
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomNumber(0, array.length);
 
@@ -18,7 +19,7 @@ export const getRandomDate = (isDouble = false, minute = 0) => {
   extDate.setMinutes(targetDate.getMinutes() + minute);
   if (isDouble) {
     return [
-      targetDate, extDate,
+      moment(targetDate).toISOString(true), moment(extDate).toISOString(true),
     ];
   }
   return targetDate;

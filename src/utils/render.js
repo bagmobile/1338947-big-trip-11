@@ -7,27 +7,40 @@ export const RenderPosition = {
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
-
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
 
+export const createHTMLCollection = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.children;
+};
+
 export const render = (container, component, place) => {
+  let renderElement = component.getElement();
+
+  if (renderElement instanceof HTMLCollection) {
+    component.setElement(renderElement[1]);
+  } else {
+    renderElement = [renderElement];
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(component.getElement());
+      container.prepend(...renderElement);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(component.getElement());
+      container.append(...renderElement);
       break;
     case RenderPosition.BEFOREBEGIN:
-      container.before(component.getElement());
+      container.before(...renderElement);
       break;
     case RenderPosition.AFTEREND:
-      container.after(component.getElement());
+      container.after(...renderElement);
       break;
     default:
-      container.appendChild(component.getElement());
+      container.appendChild(...renderElement);
   }
 };
 
@@ -44,7 +57,9 @@ export const replace = (newComponent, oldComponent) => {
 };
 
 export const remove = (component) => {
+  if (!component) {
+    return;
+  }
   component.getElement().remove();
   component.removeElement();
 };
-

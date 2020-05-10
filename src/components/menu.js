@@ -1,27 +1,40 @@
 import AbstractComponent from "./abstract-component.js";
+import {MenuTab} from "../config.js";
 
 const createMenuTab = (tab, isActive) => {
-  const {name, url} = tab;
   const tabActiveClass = isActive ? `trip-tabs__btn--active` : ``;
 
-  return (`<a class="trip-tabs__btn ${tabActiveClass}" href="${url}">${name}</a>`);
+  return (`<a class="trip-tabs__btn ${tabActiveClass}" href="#">${tab}</a>`);
 };
 
-const createMenuTemplate = (menu) => {
-  const menuTabs = menu.map((tab, index) => createMenuTab(tab, index === 0)).join(`\n`);
+const createMenuTemplate = (tabs, menuTab) => {
+  const tabsList = tabs.map((tab) => createMenuTab(tab, tab === menuTab)).join(`\n`);
 
-  return (`<nav class="trip-controls__trip-tabs  trip-tabs">${menuTabs}</nav>`);
+  return (`<nav class="trip-controls__trip-tabs  trip-tabs">${tabsList}</nav>`);
 };
 
 export class Menu extends AbstractComponent {
-
-  constructor(menu) {
+  constructor(menuTab = MenuTab.TABLE) {
     super();
-    this._menu = menu;
+    this._currentMenuTab = menuTab;
   }
 
   getTemplate() {
-    return createMenuTemplate(this._menu);
+    return createMenuTemplate(Object.values(MenuTab), this._currentMenuTab);
+  }
+
+  getCurrentMenuTab() {
+    return this._currentMenuTab;
+  }
+
+  setMenuTabChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      if (this._currentMenuTab !== evt.target.innerText) {
+        this._currentMenuTab = evt.target.innerText;
+        handler(this._currentMenuTab);
+      }
+    });
+
   }
 
 }

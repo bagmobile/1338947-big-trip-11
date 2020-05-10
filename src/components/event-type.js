@@ -1,6 +1,6 @@
-import AbstractComponent from "./abstract-component.js";
-import {getEventTypes} from "../data/trip-event.js";
+import {getTripEventTypes} from "../data/trip-event.js";
 import * as util from "../utils/utils.js";
+import AbstractComponent from "./abstract-component";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
   const lowerName = util.upperFirstChar(name);
@@ -17,24 +17,29 @@ const createEventTypeItemTemplate = (name, isChecked) => {
 </div>`);
 };
 
-const createEventTypeListTemplate = (tripEvent, options) => {
-  const {currentEventType} = options;
-  const [transportTypes, activityTypes] = getEventTypes();
+const createEventTypeListTemplate = (tripEvent, currentEventType) => {
+  const [transportTypes, activityTypes] = getTripEventTypes();
   const createEventTypeItemHandler = (eventType) => createEventTypeItemTemplate(eventType, currentEventType === eventType);
   const transferList = transportTypes.map(createEventTypeItemHandler).join(`\n`);
   const activityList = activityTypes.map(createEventTypeItemHandler).join(`\n`);
 
-  return (`<div class="event__type-list">
-    <fieldset class="event__type-group">
-        <legend class="visually-hidden">Transfer</legend>
-        ${transferList}
-    </fieldset>
-    <fieldset class="event__type-group">
-        <legend class="visually-hidden">Activity</legend>
-        ${activityList}
-    </fieldset>
-</div>
-`);
+  return (`<div class="event__type-wrapper">
+    <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <span class="visually-hidden">Choose event type</span>
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${currentEventType}.png" alt="Event type icon">
+    </label>
+    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+    <div class="event__type-list">
+        <fieldset class="event__type-group">
+            <legend class="visually-hidden">Transfer</legend>
+            ${transferList}
+        </fieldset>
+        <fieldset class="event__type-group">
+            <legend class="visually-hidden">Activity</legend>
+            ${activityList}
+        </fieldset>
+    </div>
+</div>`);
 };
 
 export class EventType extends AbstractComponent {
@@ -42,10 +47,25 @@ export class EventType extends AbstractComponent {
   constructor(tripEvent) {
     super();
     this._tripEvent = tripEvent;
+    this._currentEventType = tripEvent.type;
+    this._tripEventChangeEventHandler = null;
   }
 
-  getTemplate(options) {
-    return createEventTypeListTemplate(this._tripEvent, options);
+  getTemplate() {
+    return createEventTypeListTemplate(this._tripEvent, this._currentEventType);
   }
 
+  setEventTypeChangeHandler(handler) {
+    this.getElement().querySelectorAll(`.event__type-group`)
+      .forEach((item) => item.addEventListener(`change`, (evt) => {
+        this._currentEventType = evt.target.value;
+        this.rerender();
+        handler(this._currentEventType);
+      }));
+    this._tripEventChangeEventHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setEventTypeChangeHandler(this._tripEventChangeEventHandler);
+  }
 }
