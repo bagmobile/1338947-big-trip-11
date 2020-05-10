@@ -1,12 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 import {SortType} from "../config.js";
 
-const SORT_ID_PREFIX = `sort-`;
-
-const getSortTypeByElement = (inputId) => {
-  return inputId.substring(SORT_ID_PREFIX.length);
-};
-
 const createSortElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
   const checked = isChecked ? `checked` : ``;
@@ -67,7 +61,7 @@ export class Sort extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
-      this._currenSortType = getSortTypeByElement(evt.target.id);
+      this._currenSortType = evt.target.id.replace(/^.+-/, ``);
       handler(this._currenSortType);
     });
   }

@@ -1,7 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 import {MAX_COUNT_OFFER_SHOW} from "../config.js";
-import TripOffersModel from "../models/trip-offers-model.js";
-import {EVENT_TYPE_DEFAULT} from "../data/trip-event";
+import {EVENT_TYPE_DEFAULT} from "../data/trip-event.js";
 
 export const OfferListType = {
   SHORT_TEXT_LIST: `shortTextList`,
@@ -53,8 +52,6 @@ const createCheckedOfferListTemplate = (tripEvent, tripOffersModel) => {
 </section>`);
 };
 
-
-
 const createAvailableOfferListTemplate = (tripOffersModel, eventType) => {
   const offers = tripOffersModel.getCheckedTripOffers(eventType, []);
   const offerList = offers.map((offer) => createCheckedOfferItemTemplate(offer)).join(`\n`);
@@ -66,7 +63,6 @@ const createAvailableOfferListTemplate = (tripOffersModel, eventType) => {
     </div>
 </section>`);
 };
-
 
 export class EventOffer extends AbstractComponent {
 

@@ -12,22 +12,18 @@ export class TripBoardController {
     this._container = container;
     this._tripEventsModel = tripEventsModel;
 
+    this.activeTripEditEventController = null;
+
     this._noTasksComponent = new TripNoEventElement();
     this._dayListComponent = null;
 
-    this._tripEventControllers = [];
-
     this._sortController = new SortController(this._container, this._tripEventsModel);
-
-    //this._onDataChange = this._onDataChange.bind(this);
-    //this._onViewChange = this._onViewChange.bind(this);
 
     this._onDataChange = this._onDataChange.bind(this);
     this._tripEventsModel.setDataChangeHandler(this._onDataChange);
-
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
     this._tripEventsModel.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
     this._tripEventsModel.setFilterTypeChangeHandler(this._onFilterTypeChange);
   }
 
@@ -44,9 +40,12 @@ export class TripBoardController {
   }
 
   showBoard() {
-    this._dayListComponent.show();
-    this._sortController.getSortComponent().show();
-    this._noTasksComponent.show();
+    if (!this._tripEventsModel.isEmpty()) {
+      this._dayListComponent.show();
+      this._sortController.getSortComponent().show();
+    } else {
+      this._noTasksComponent.show();
+    }
   }
 
   hideBoard() {
@@ -55,7 +54,19 @@ export class TripBoardController {
     this._noTasksComponent.hide();
   }
 
+  setActiveTripEditEventController(controller) {
+    if (controller === null) {
+      this.activeTripEditEventController = controller;
+      return;
+    }
+    if (this.activeTripEditEventController) {
+      this.activeTripEditEventController._close(false);
+    }
+    this.activeTripEditEventController = controller;
+  }
+
   _rerenderBoard() {
+    remove(this._noTasksComponent);
     remove(this._dayListComponent);
     remove(this._sortController.getSortComponent());
     this.render();
@@ -82,30 +93,28 @@ export class TripBoardController {
   _renderTripEvents() {
     const tripEvents = this._tripEventsModel.getTripEvents();
     const eventsListElement = this._dayListComponent.getElement().querySelectorAll(`.trip-events__item`);
+
     tripEvents.forEach((tripEvent, index) => {
-      const tripEventController = new TripEventController(tripEvent);
+      const tripEventController = new TripEventController(this, tripEvent);
       this._tripEventsModel.setRefreshTripEventHandler(tripEvent.id, tripEventController.refreshTripEventHandler);
+
       tripEventController.render(eventsListElement[index]);
-      this._tripEventControllers.push(tripEventController);
     });
   }
 
   _onSortTypeChange() {
-    remove(this._dayListComponent);
-    this._renderTripEventsList();
+    this._rerenderTripEventList();
   }
 
   _onFilterTypeChange() {
     if (this._sortController.getCurrentSortType() !== SortType.EVENT) {
       this._sortController.reset();
     }
-    remove(this._dayListComponent);
-    this._renderTripEventsList();
+    this._rerenderTripEventList();
   }
 
   _onDataChange() {
-    console.log(`dataChange`);
-    this._rerenderTripEventList();
+    this._rerenderBoard();
   }
 
 }

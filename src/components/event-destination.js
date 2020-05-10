@@ -27,14 +27,14 @@ const createEventDestinationTemplate = (destination) => {
 
 export class EventDestination extends AbstractComponent {
 
-  constructor(tripEvent) {
+  constructor(tripDestinationsModel, destination, currentTown = null) {
     super();
-    this._tripEvent = tripEvent;
+    this._destination = !currentTown ? destination : tripDestinationsModel.getDestination(currentTown);
   }
 
   getTemplate() {
 
-    return createEventDestinationTemplate(this._tripEvent.destination);
+    return createEventDestinationTemplate(this._destination);
   }
 
 }

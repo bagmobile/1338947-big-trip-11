@@ -24,7 +24,7 @@ export class TripInfo extends AbstractComponent {
   }
 
   getTemplate() {
-    return !this._tripEventsModel.isEmpty() ? createTripInfoTemplate(this._tripEventsModel.getTripInfo()) : ``;
+    return createTripInfoTemplate(this._tripEventsModel.getTripInfo());
   }
 
 }

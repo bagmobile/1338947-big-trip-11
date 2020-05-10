@@ -1,5 +1,5 @@
 import AbstractComponent from "../abstract-component.js";
-import {createENodeElement} from "../../utils/render";
+import {createHTMLCollection} from "../../utils/render";
 
 const createFavoriteButtonTemplate = (isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -26,7 +26,7 @@ export class FavoriteBtn extends AbstractComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createENodeElement(this.getTemplate());
+      this._element = createHTMLCollection(this.getTemplate());
     }
     return this._element;
   }

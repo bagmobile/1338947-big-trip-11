@@ -1,14 +1,9 @@
 import AbstractComponent from "./abstract-component.js";
-import {FilterType} from "../config";
+import {FilterType} from "../config.js";
 
-const FILTER_ID_PREFIX = `filter-`;
-
-const getFilterTypeByElement = (inputId) => {
-  return inputId.substring(FILTER_ID_PREFIX.length);
-};
-
-const createFilterElement = (filter, isChecked) => {
+const createFilterElement = (filter, isChecked, isHidden) => {
   const checked = isChecked ? `checked` : ``;
+  const hidden = isHidden ? `` : `visually-hidden`;
 
   return (`<div class="trip-filters__filter">
     <input
@@ -19,12 +14,12 @@ const createFilterElement = (filter, isChecked) => {
             value="${filter}"
             ${checked}
     >
-    <label class="trip-filters__filter-label" for="filter-${filter}">${filter}</label>
+    <label class="trip-filters__filter-label ${hidden}" for="filter-${filter}">${filter}</label>
     </div>`);
 };
 
-const createFilterTemplate = (filters, filterType) => {
-  const filtersList = filters.map((filter) => createFilterElement(filter, filter === filterType)).join(`\n`);
+const createFilterTemplate = (filters, filterType, options) => {
+  const filtersList = filters.map((filter) => createFilterElement(filter, filter === filterType, options[filter])).join(`\n`);
 
   return (`<form class="trip-filters" action="#" method="get">
     ${filtersList}
@@ -34,13 +29,14 @@ const createFilterTemplate = (filters, filterType) => {
 
 export class Filter extends AbstractComponent {
 
-  constructor(filterType = FilterType.EVERYTHING) {
+  constructor(options, filterType = FilterType.EVERYTHING) {
     super();
+    this._options = options;
     this._currenFilterType = filterType;
   }
 
   getTemplate() {
-    return createFilterTemplate(Object.values(FilterType), this.getCurrentFilterType());
+    return createFilterTemplate(Object.values(FilterType), this.getCurrentFilterType(), this._options);
   }
 
   getCurrentFilterType() {
@@ -49,7 +45,7 @@ export class Filter extends AbstractComponent {
 
   setFilterTypeChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
-      this._currenFilterType = getFilterTypeByElement(evt.target.id);
+      this._currenFilterType = evt.target.id.replace(/^.+-/, ``);
       handler(this._currenFilterType);
     });
   }

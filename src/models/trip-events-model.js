@@ -1,5 +1,6 @@
 import {FilterType, SortType} from "../config.js";
-import {formatDatePeriod, formatShortDate} from "../utils/common.js";
+import {formatShortDate} from "../utils/common.js";
+import {formatDatePeriod} from "../utils/common";
 
 export default class TripEventsModel {
 
@@ -23,7 +24,7 @@ export default class TripEventsModel {
   }
 
   isEmpty() {
-    return this.getTripEvents().length === 0;
+    return this._tripEvents.length === 0;
   }
 
   getTripEvents() {
@@ -32,7 +33,7 @@ export default class TripEventsModel {
   }
 
   setTripEvents(tripEvents) {
-    this._tripEvents = Array.from(tripEvents);
+    this._tripEvents = this.getTripEventsBySort(tripEvents);
     this._callHandlers(this._dataChangeHandlers);
   }
 
@@ -49,16 +50,15 @@ export default class TripEventsModel {
     }
 
     this._tripEvents.splice(index, 1, tripEvent);
-    console.log( this._tripEvents);
+
     if (isForced) {
       this._callRefreshTripEventHandler(tripEvent);
       return true;
     }
-    this._callHandlers(this._dataChangeHandlers, tripEvent);
 
+    this._callHandlers(this._dataChangeHandlers, tripEvent);
     return true;
   }
-
 
   deleteTripEvent(id) {
     const index = this._tripEvents.findIndex((item) => item.id === id);
@@ -72,7 +72,7 @@ export default class TripEventsModel {
   }
 
   getGroupByDaysTripEvents() {
-    const tripEvents = Array.from(this.getTripEvents());
+    const tripEvents = this.getTripEvents();
     let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.startDateTime)), new Set())];
     return uniqueDays.reduce((acc, day, index) => {
       acc.push([{
@@ -117,17 +117,25 @@ export default class TripEventsModel {
       case FilterType.EVERYTHING:
         return this._tripEvents;
       case FilterType.FUTURE:
-        return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) >= new Date());
+        return this.getFilterFuture();
       case FilterType.PAST:
-        return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) < new Date());
+        return this.getFilterPast();
       default:
         return this._tripEvents;
     }
   }
 
-  getCost() {
+  getFilterFuture() {
+    return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) >= new Date());
+  }
+
+  getFilterPast() {
+    return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) < new Date());
+  }
+
+  getCost(tripEvents) {
     let sum = 0;
-    this.getTripEventsByFilter().forEach((item) => {
+    tripEvents.forEach((item) => {
       sum += item.price + item.offers.reduce((acc, offer) => {
         acc += offer.price;
         return acc;
@@ -136,27 +144,46 @@ export default class TripEventsModel {
     return sum;
   }
 
-  getTitle() {
+  getPeriod(tripEvents) {
+    if (tripEvents.length === 0) {
+      return ``;
+    }
+    return formatDatePeriod(tripEvents[0].startDateTime, tripEvents[tripEvents.length - 1].endDateTime);
+  }
+
+  getTitle(tripEvents) {
     const TITLE_COUNT_TOWN = 3;
-    const tripEvents = this.getTripEventsByFilter();
-    const towns = tripEvents
-      .slice()
-      .filter((item, index) => [0, 1, tripEvents.length - 1].includes(index))
-      .map((item) => item.town);
-    return (TITLE_COUNT_TOWN < towns.length) ? towns.join(` - `) : [towns[0], towns[towns.length - 1]].join(` - ... - `);
+    const towns = tripEvents.map((item) => item.destination.name);
+    if (towns.length === 0) {
+      return ``;
+    }
+    const [first, last] = [towns[0], towns[towns.length - 1]];
+    if (towns.length > TITLE_COUNT_TOWN) {
+      return `${first} - ... - ${last}`;
+    } else {
+      return towns.join(` - `);
+    }
   }
 
   getTripInfo() {
     const tripEvents = this.getTripEventsByFilter();
     return {
       title: this.getTitle(tripEvents),
-      period: formatDatePeriod(tripEvents[0].startDateTime, tripEvents[tripEvents.length - 1].endDateTime),
+      period: this.getPeriod(tripEvents),
       cost: this.getCost(tripEvents),
     };
   }
 
   setFilterTypeChangeHandler(handler) {
     this._filterTypeChangeHandlers.push(handler);
+  }
+
+  getAvailableFilterTypes() {
+    return {
+      [FilterType.EVERYTHING]: !this.isEmpty(),
+      [FilterType.FUTURE]: this.getFilterFuture().length > 0,
+      [FilterType.PAST]: this.getFilterPast(). length > 0,
+    };
   }
 
   setSortTypeChangeHandler(handler) {
@@ -167,12 +194,12 @@ export default class TripEventsModel {
     this._dataChangeHandlers.push(handler);
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
-  }
-
   setRefreshTripEventHandler(key, handler) {
     this._refreshTripEventHandlers.set(key, handler);
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 
   _callRefreshTripEventHandler(tripEvent) {

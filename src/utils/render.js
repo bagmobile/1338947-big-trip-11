@@ -1,5 +1,3 @@
-const HIDDEN_CLASS = `visually-hidden`;
-
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREBEGIN: `beforebegin`,
@@ -13,29 +11,36 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const createENodeElement = (template) => {
+export const createHTMLCollection = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
   return newElement.children;
 };
 
 export const render = (container, component, place) => {
+  let renderElement = component.getElement();
+
+  if (renderElement instanceof HTMLCollection) {
+    component.setElement(renderElement[1]);
+  } else {
+    renderElement = [renderElement];
+  }
 
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(component.getElement());
+      container.prepend(...renderElement);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(component.getElement());
+      container.append(...renderElement);
       break;
     case RenderPosition.BEFOREBEGIN:
-      container.before(component.getElement());
+      container.before(...renderElement);
       break;
     case RenderPosition.AFTEREND:
-      container.after(component.getElement());
+      container.after(...renderElement);
       break;
     default:
-      container.appendChild(component.getElement());
+      container.appendChild(...renderElement);
   }
 };
 
@@ -52,16 +57,9 @@ export const replace = (newComponent, oldComponent) => {
 };
 
 export const remove = (component) => {
+  if (!component) {
+    return;
+  }
   component.getElement().remove();
   component.removeElement();
-};
-
-export const show = (element) => {
-  element.classList.remove(HIDDEN_CLASS);
-};
-
-export const hide = (element) => {
-
-  element.classList.add(HIDDEN_CLASS);
-
 };

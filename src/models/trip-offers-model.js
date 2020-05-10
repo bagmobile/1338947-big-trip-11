@@ -20,6 +20,10 @@ export default class TripOffersModel {
     return tripOffersForType;
   }
 
+  hasOffers(tripEventType) {
+    return this.getTripOffers(tripEventType).length !== 0;
+  }
+
   getCheckedTripOffers(tripEventType, tripEventOffers) {
     const tripOffersForType = this.getTripOffers(tripEventType);
 

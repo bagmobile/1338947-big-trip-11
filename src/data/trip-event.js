@@ -1,9 +1,6 @@
 import * as util from "../utils/utils.js";
-import {generateEvents} from "../mock/event-mock.js";
 import * as config from "../config.js";
 import moment from "moment";
-
-export const EVENT_TYPE_DEFAULT = `bus`;
 
 export class TripEventModel {
 
@@ -20,15 +17,18 @@ export class TripEventModel {
 }
 
 export const getDefaultTripEvent = () => {
+
   return new TripEventModel({
-    type: EVENT_TYPE_DEFAULT,
+    id: String(Math.random()),
+    type: getDefaultTripEventType(),
     startDateTime: moment(new Date()).toISOString(true),
     endDateTime: moment(new Date()).toISOString(true),
     price: 0,
     offers: [],
     destination: {
       description: ``,
-
+      name: ``,
+      photos: [],
     },
     isFavorite: false,
   });
@@ -51,12 +51,11 @@ export const getRoute = (eventType) => {
   return `${util.upperFirstChar(eventType)} ${getRoutePrefix(eventType)}`;
 };
 
-export const getEvents = () => {
-  /* Заглушка на моковые данные*/
-  return generateEvents();
-};
-
 export const getTripEventTypes = () => {
   return [...config.tripEventTypes.values()];
+};
+
+export const getDefaultTripEventType = () => {
+  return getTripEventTypes()[0][0];
 };
 

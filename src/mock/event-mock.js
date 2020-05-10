@@ -2,8 +2,7 @@ import * as util from "../utils/utils.js";
 import * as config from "../config.js";
 import {TripEventModel} from "../data/trip-event";
 
-const MAX_EVENT_COUNT = 5;
-const MAX_DESTINATION_COUNT = 20;
+const MAX_EVENT_COUNT = 12;
 const MAX_DESTINATION_SENTENCE = 5;
 const MAX_DESTINATION_PHOTO = 3;
 const MAX_OFFER_COUNT = 7;

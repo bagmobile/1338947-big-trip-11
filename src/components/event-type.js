@@ -1,6 +1,6 @@
 import {getTripEventTypes} from "../data/trip-event.js";
 import * as util from "../utils/utils.js";
-import AbstractSmartComponent from "./abstract-start-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
   const lowerName = util.upperFirstChar(name);
@@ -42,7 +42,7 @@ const createEventTypeListTemplate = (tripEvent, currentEventType) => {
 </div>`);
 };
 
-export class EventType extends AbstractSmartComponent {
+export class EventType extends AbstractComponent {
 
   constructor(tripEvent) {
     super();

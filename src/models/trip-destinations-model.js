@@ -13,8 +13,9 @@ export default class TripDestinationsModel {
     this._tripDestinations = tripDestinations;
   }
 
-  getTripDestinations() {
-    return this._tripDestinations;
+  hasDescription(town) {
+    const destination = this.getDestination(town);
+    return Boolean(destination.description) && destination.photos.length !== 0;
   }
 
   getDestination(town) {
