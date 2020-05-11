@@ -1,6 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
 import {MAX_COUNT_OFFER_SHOW} from "../config.js";
-import {EVENT_TYPE_DEFAULT} from "../data/trip-event.js";
 
 export const OfferListType = {
   SHORT_TEXT_LIST: `shortTextList`,
@@ -8,8 +7,9 @@ export const OfferListType = {
   AVAILABLE_OPTION_LIST: `availableOptionList`,
 };
 
-const createEventOfferItemTemplate = (offer) => {
+const createItemTemplate = (offer) => {
   const {title, price} = offer;
+
   return (`<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -17,14 +17,15 @@ const createEventOfferItemTemplate = (offer) => {
 `);
 };
 
-export const createEventShortOfferListTemplate = (tripEvent) => {
-  const offerList = tripEvent.offers.slice(0, MAX_COUNT_OFFER_SHOW).map((offer) => createEventOfferItemTemplate(offer)).join(`\n`);
+export const createShortOffersListTemplate = (offers) => {
+  const offerList = offers.map((offer) => createItemTemplate(offer)).join(`\n`);
+
   return (`<ul class="event__selected-offers">
     ${offerList}
 </ul>`);
 };
 
-const createCheckedOfferItemTemplate = (offer) => {
+const createSelectedOfferItemTemplate = (offer) => {
   const {index, isChecked, data} = offer;
   const {title, price} = data;
   const checked = isChecked ? `checked` : ``;
@@ -40,9 +41,8 @@ const createCheckedOfferItemTemplate = (offer) => {
 </div>`);
 };
 
-const createCheckedOfferListTemplate = (tripEvent, tripOffersModel) => {
-  const offers = tripOffersModel.getCheckedTripOffers(tripEvent.type, tripEvent.offers);
-  const offerList = offers.map((offer) => createCheckedOfferItemTemplate(offer)).join(`\n`);
+const createSelectedOffersListTemplate = (offers) => {
+  const offerList = offers.map((offer) => createSelectedOfferItemTemplate(offer)).join(`\n`);
 
   return (`<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -52,9 +52,8 @@ const createCheckedOfferListTemplate = (tripEvent, tripOffersModel) => {
 </section>`);
 };
 
-const createAvailableOfferListTemplate = (tripOffersModel, eventType) => {
-  const offers = tripOffersModel.getCheckedTripOffers(eventType, []);
-  const offerList = offers.map((offer) => createCheckedOfferItemTemplate(offer)).join(`\n`);
+const createAvailableOffersListTemplate = (offers) => {
+  const offerList = offers.map((offer) => createSelectedOfferItemTemplate(offer)).join(`\n`);
 
   return (`<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -66,10 +65,10 @@ const createAvailableOfferListTemplate = (tripOffersModel, eventType) => {
 
 export class EventOffer extends AbstractComponent {
 
-  constructor(tripEvent, tripOffersModel, offerListType, newEventType = EVENT_TYPE_DEFAULT) {
+  constructor(tripEvent, eventOfferStore, offerListType, newEventType) {
     super();
     this._tripEvent = tripEvent;
-    this._tripOffersModel = tripOffersModel;
+    this._eventOfferStore = eventOfferStore;
     this._offerListType = offerListType;
     this._newEventType = newEventType;
   }
@@ -77,11 +76,15 @@ export class EventOffer extends AbstractComponent {
   getTemplate() {
     switch (this._offerListType) {
       case OfferListType.SHORT_TEXT_LIST:
-        return createEventShortOfferListTemplate(this._tripEvent);
+        const shortListOffers = this._tripEvent.offers.slice(0, MAX_COUNT_OFFER_SHOW);
+        return createShortOffersListTemplate(shortListOffers);
       case OfferListType.CHECKED_OPTION_LIST:
-        return createCheckedOfferListTemplate(this._tripEvent, this._tripOffersModel);
+        const selectedOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, this._tripEvent.offers);
+
+        return createSelectedOffersListTemplate(selectedOffers);
       case OfferListType.AVAILABLE_OPTION_LIST:
-        return createAvailableOfferListTemplate(this._tripOffersModel, this._newEventType);
+        const availableOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, []);
+        return createAvailableOffersListTemplate(availableOffers, this._newEventType);
       default:
         return ``;
     }

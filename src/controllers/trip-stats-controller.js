@@ -1,7 +1,7 @@
 import {TripStats as TripStatsComponent} from "../components/trip-stats.js";
 import {render, RenderPosition} from "../utils/render.js";
 
-export class TripStatsController {
+export default class TripStatsController {
 
   constructor(container, tripEventsModel) {
     this._container = container;

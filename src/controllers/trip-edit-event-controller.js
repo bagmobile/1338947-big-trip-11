@@ -1,8 +1,8 @@
 import {TripEditEvent as TripEditEventComponent} from "../components/trip-edit-event.js";
 import {remove, render, RenderPosition, replace} from "../utils/render.js";
 import {isEscEvent} from "../utils/dom-utils.js";
-import TripEventsModel from "../models/trip-events-model.js";
-import {TripEventModel} from "../data/trip-event.js";
+import TripEventStore from "../models/trip-event-store.js";
+import {TripEventModel} from "../models/trip-event-model.js";
 
 export const ModeEditEvent = {
   NEW: `new`,
@@ -17,7 +17,7 @@ export default class TripEditEventController {
     this._mode = mode;
     this._sourceComponent = sourceComponent;
     this._editEventComponent = new TripEditEventComponent(this._tripEvent, this._mode);
-    this._tripEventsModel = new TripEventsModel();
+    this._tripEventsModel = new TripEventStore();
 
     this._closeEditEventHandelrs = [];
 

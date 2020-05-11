@@ -29,14 +29,14 @@ const createFilterTemplate = (filters, filterType, options) => {
 
 export class Filter extends AbstractComponent {
 
-  constructor(options, filterType = FilterType.EVERYTHING) {
+  constructor(tripEventStore, filterType = FilterType.EVERYTHING) {
     super();
-    this._options = options;
+    this._tripEventStore = tripEventStore;
     this._currenFilterType = filterType;
   }
 
   getTemplate() {
-    return createFilterTemplate(Object.values(FilterType), this.getCurrentFilterType(), this._options);
+    return createFilterTemplate(Object.values(FilterType), this.getCurrentFilterType(), this._tripEventStore.getAvailableFilterTypes());
   }
 
   getCurrentFilterType() {

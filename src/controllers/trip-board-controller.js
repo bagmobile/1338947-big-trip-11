@@ -1,5 +1,5 @@
 import {remove, render, RenderPosition} from "../utils/render.js";
-import {TripNoEvent as TripNoEventElement} from "../components/trip-no-event.js";
+import {TripNoEvent as TripNoEventComponent} from "../components/trip-no-event.js";
 import {DayList as DayListComponent} from "../components/day-list.js";
 import TripEventController from "./trip-event-controller.js";
 import SortController from "./sort-controller.js";
@@ -14,7 +14,7 @@ export class TripBoardController {
 
     this.activeTripEditEventController = null;
 
-    this._noTasksComponent = new TripNoEventElement();
+    this._tripNoEventComponent = new TripNoEventComponent();
     this._dayListComponent = null;
 
     this._sortController = new SortController(this._container, this._tripEventsModel);
@@ -28,14 +28,8 @@ export class TripBoardController {
   }
 
   render() {
-
-    if (this._tripEventsModel.isEmpty()) {
-      render(this._container, this._noTasksComponent, RenderPosition.AFTEREND);
-      return;
-    }
-
     this._renderSort();
-
+    this._rerenderTemplate();
     this._renderTripEventsList();
   }
 
@@ -44,14 +38,14 @@ export class TripBoardController {
       this._dayListComponent.show();
       this._sortController.getSortComponent().show();
     } else {
-      this._noTasksComponent.show();
+      this._tripNoEventComponent.show();
     }
   }
 
   hideBoard() {
     this._dayListComponent.hide();
     this._sortController.getSortComponent().hide();
-    this._noTasksComponent.hide();
+    this._tripNoEventComponent.hide();
   }
 
   setActiveTripEditEventController(controller) {
@@ -65,16 +59,8 @@ export class TripBoardController {
     this.activeTripEditEventController = controller;
   }
 
-  _rerenderBoard() {
-    remove(this._noTasksComponent);
-    remove(this._dayListComponent);
-    remove(this._sortController.getSortComponent());
-    this.render();
-  }
-
-  _rerenderTripEventList() {
-    remove(this._dayListComponent);
-    this._renderTripEventsList();
+  _renderTripNoEvent() {
+    render(this._container, this._tripNoEventComponent, RenderPosition.AFTEREND);
   }
 
   _renderSort() {
@@ -102,6 +88,24 @@ export class TripBoardController {
     });
   }
 
+  _rerenderTripEventList() {
+    remove(this._dayListComponent);
+    if (!this._tripEventsModel.isEmpty()) {
+      this._renderTripEventsList();
+    }
+  }
+
+  _rerenderTemplate() {
+    if (this._tripEventsModel.isFirst()) {
+      remove(this._tripNoEventComponent);
+      this._renderSort();
+    }
+    if (this._tripEventsModel.isEmpty()) {
+      this._renderTripNoEvent();
+      remove(this._sortController.getSortComponent());
+    }
+  }
+
   _onSortTypeChange() {
     this._rerenderTripEventList();
   }
@@ -114,7 +118,8 @@ export class TripBoardController {
   }
 
   _onDataChange() {
-    this._rerenderBoard();
+    this._rerenderTemplate();
+    this._rerenderTripEventList();
   }
 
 }

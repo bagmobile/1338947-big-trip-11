@@ -1,4 +1,4 @@
-import {getTripEventTypes} from "../data/trip-event.js";
+import {getTripEventTypes} from "../models/trip-event-model.js";
 import * as util from "../utils/utils.js";
 import AbstractComponent from "./abstract-component";
 

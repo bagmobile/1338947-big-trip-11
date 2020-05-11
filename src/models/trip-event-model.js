@@ -14,12 +14,39 @@ export class TripEventModel {
     this.destination = data.destination;
     this.isFavorite = data.isFavorite;
   }
+
+  static parse(tripEvent) {
+
+    return new TripEventModel({
+      id: tripEvent[`id`],
+      type: tripEvent[`type`],
+      startDateTime: tripEvent[`date_from`],
+      endDateTime: tripEvent[`date_to`],
+      price: tripEvent[`base_price`],
+      isFavorite: tripEvent[`is_favorite`],
+      offers: tripEvent[`offers`],
+      destination: tripEvent[`destination`],
+    });
+  }
+
+  static toRAW(tripEvent) {
+    return {
+      "id": tripEvent.id,
+      "type": tripEvent.type,
+      "date_from": tripEvent.startDateTime,
+      "date_to": tripEvent.endDateTime,
+      "base_price": tripEvent.price,
+      "is_favorite": tripEvent.isFavorite,
+      "offers": tripEvent.offers,
+      "destination": tripEvent.destination,
+    };
+  }
 }
 
 export const getDefaultTripEvent = () => {
 
   return new TripEventModel({
-    id: String(Math.random()),
+    id: null,
     type: getDefaultTripEventType(),
     startDateTime: moment(new Date()).toISOString(true),
     endDateTime: moment(new Date()).toISOString(true),
@@ -28,7 +55,7 @@ export const getDefaultTripEvent = () => {
     destination: {
       description: ``,
       name: ``,
-      photos: [],
+      pictures: [],
     },
     isFavorite: false,
   });

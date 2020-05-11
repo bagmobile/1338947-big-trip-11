@@ -1,14 +1,14 @@
 import * as util from "../utils/utils.js";
 import * as config from "../config.js";
-import {TripEventModel} from "../data/trip-event";
+import {TripEventModel} from "../models/trip-event-model";
 
 const MAX_EVENT_COUNT = 12;
 const MAX_DESTINATION_SENTENCE = 5;
-const MAX_DESTINATION_PHOTO = 3;
+const MAX_DESTINATION_PICTURE = 3;
 const MAX_OFFER_COUNT = 7;
 const TRIP_RANGE_PRICE = [100, 500];
 
-const towns = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`, `Moscow`, `Tver`, `Primorsk`];
+const eventDestinationNames = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`, `Moscow`, `Tver`, `Primorsk`];
 
 const offers = [
   {title: `Add luggage`, price: 30},
@@ -42,8 +42,8 @@ const getEventTypes = () => {
   return [...config.tripEventTypes.values()];
 };
 
-const getTown = () => {
-  return util.getRandomArrayItem(towns);
+const getEventDestinationName = () => {
+  return util.getRandomArrayItem(eventDestinationNames);
 };
 
 const getPrice = () => {
@@ -66,8 +66,8 @@ const getTripEventOffers = () => {
 const getDestination = () => {
   return {
     description: destinations.slice(util.getRandomNumber(0, 4), MAX_DESTINATION_SENTENCE).join(`\n`),
-    name: getTown(),
-    photos: (new Array(MAX_DESTINATION_PHOTO))
+    name: getEventDestinationName(),
+    pictures: (new Array(MAX_DESTINATION_PICTURE))
       .fill({})
       .map(() => ({
         src: `http://picsum.photos/248/152?r=${util.getRandomNumber(0, 500)}`,
@@ -102,12 +102,12 @@ export const generateEvents = () => {
 };
 
 export const generateDestinations = () => {
-  return towns.map((town) => {
-    return Object.assign(getDestination(), {name: town});
+  return eventDestinationNames.map((item) => {
+    return Object.assign(getDestination(), {name: item});
   });
 };
 
-export const generateTripOffers = () => {
+export const generateEventOffers = () => {
   const [_to, _in] = [...config.tripEventTypes.values()];
   return [..._to, ..._in].slice().map((item) => {
     return {

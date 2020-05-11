@@ -6,7 +6,7 @@ export default class FilterController {
   constructor(container, tripEventModel) {
     this._contanier = container;
     this._tripEventModel = tripEventModel;
-    this._filterComponent = new FilterComponent(this._tripEventModel.getAvailableFilterTypes());
+    this._filterComponent = new FilterComponent(this._tripEventModel);
 
     this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
     this._filterComponent.setFilterTypeChangeHandler(this._onFilterTypeChange);
@@ -18,12 +18,16 @@ export default class FilterController {
     render(this._contanier, this._filterComponent, RenderPosition.AFTEREND);
   }
 
-  _onDataChange() {
+  _reset() {
     const currentFilterType = this._filterComponent.getCurrentFilterType();
     remove(this._filterComponent);
-    this._filterComponent = new FilterComponent(this._tripEventModel.getAvailableFilterTypes(), currentFilterType);
+    this._filterComponent = new FilterComponent(this._tripEventModel, currentFilterType);
     this._filterComponent.setFilterTypeChangeHandler(this._onFilterTypeChange);
     this.render();
+  }
+
+  _onDataChange() {
+    this._reset();
   }
 
   _onFilterTypeChange(filterType) {

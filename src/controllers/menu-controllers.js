@@ -3,7 +3,7 @@ import {remove, render, RenderPosition} from "../utils/render.js";
 import {MenuTab} from "../config.js";
 import {NewEventBtn as NewEventBtnComponent} from "../components/new-event-btn";
 import TripEditEventController, {ModeEditEvent} from "./trip-edit-event-controller";
-import {getDefaultTripEvent} from "../data/trip-event";
+import {getDefaultTripEvent} from "../models/trip-event-model";
 
 export default class MenuController {
 
