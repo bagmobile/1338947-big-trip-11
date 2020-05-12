@@ -1,10 +1,12 @@
 import {FilterType, SortType} from "../config.js";
 import {formatDatePeriod, formatShortDate} from "../utils/common.js";
 import {TripEventModel} from "./trip-event-model.js";
+import AbstractStore from "./abstract-store";
 
-export default class TripEventStore {
+export default class TripEventStore extends AbstractStore {
 
   constructor(api) {
+    super();
 
     if (!TripEventStore.instance) {
       TripEventStore.instance = this;
@@ -53,7 +55,6 @@ export default class TripEventStore {
 
   updateTripEvent(id, newTripEvent, isForced = false) {
     const index = this._tripEvents.findIndex((item) => item.id === id);
-
     this._api.updateTripEvent(id, newTripEvent).then((tripEvent) => {
 
       this._tripEvents.splice(index, 1, tripEvent);

@@ -24,7 +24,7 @@ export default class API {
   }
 
   getDestinations() {
-    return this._load({path: `destinations`})
+    return this._load({path: `destinations `})
       .then((response) => response.json())
       .then(EventDestinationStore.parse);
   }

@@ -1,9 +1,10 @@
 import EventOfferModel from "./event-offer-model";
+import AbstractStore from "./abstract-store";
 
-export default class EventOfferStore {
+export default class EventOfferStore extends AbstractStore {
 
   constructor(offers) {
-
+    super();
     if (!EventOfferStore.instance) {
       this._offers = offers || [];
       EventOfferStore.instance = this;
@@ -28,7 +29,7 @@ export default class EventOfferStore {
     const [offersForType] = this._offers
       .map((item) => item.type === type ? item.offers : false)
       .filter((item) => item);
-    return offersForType;
+    return offersForType || [];
   }
 
   hasOffers(type) {

@@ -29,3 +29,11 @@ export const DayListType = {
   GROUPED: `grouped`,
 };
 
+export const getTripEventTypes = () => {
+  return [...tripEventTypes.values()];
+};
+
+export const getDefaultTripEventType = () => {
+  return getTripEventTypes()[0][0];
+};
+

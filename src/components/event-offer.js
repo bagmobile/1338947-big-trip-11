@@ -63,6 +63,13 @@ const createAvailableOffersListTemplate = (offers) => {
 </section>`);
 };
 
+const createErrorTemplate = () => {
+  return (`<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    Error! View offer list is not available now!
+</section>`);
+};
+
 export class EventOffer extends AbstractComponent {
 
   constructor(tripEvent, eventOfferStore, offerListType, newEventType) {
@@ -74,20 +81,21 @@ export class EventOffer extends AbstractComponent {
   }
 
   getTemplate() {
+    let template = ``;
+
     switch (this._offerListType) {
       case OfferListType.SHORT_TEXT_LIST:
         const shortListOffers = this._tripEvent.offers.slice(0, MAX_COUNT_OFFER_SHOW);
         return createShortOffersListTemplate(shortListOffers);
       case OfferListType.CHECKED_OPTION_LIST:
         const selectedOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, this._tripEvent.offers);
-
-        return createSelectedOffersListTemplate(selectedOffers);
+        template = createSelectedOffersListTemplate(selectedOffers);
+        break;
       case OfferListType.AVAILABLE_OPTION_LIST:
         const availableOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, []);
-        return createAvailableOffersListTemplate(availableOffers, this._newEventType);
-      default:
-        return ``;
+        template = createAvailableOffersListTemplate(availableOffers, this._newEventType);
     }
+    return this._eventOfferStore.hasErrors() ? createErrorTemplate() : template;
   }
 
 }

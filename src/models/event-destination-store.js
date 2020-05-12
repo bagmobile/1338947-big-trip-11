@@ -1,9 +1,10 @@
 import EventDestinationModel from "./event-destination-model";
+import AbstractStore from "./abstract-store";
 
-export default class EventDestinationStore {
+export default class EventDestinationStore extends AbstractStore{
 
   constructor(destinations) {
-
+    super();
     if (!EventDestinationStore.instance) {
       this._destinations = destinations || [];
       EventDestinationStore.instance = this;

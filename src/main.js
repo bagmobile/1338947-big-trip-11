@@ -8,6 +8,7 @@ import TripInfoController from "./controllers/trip-info-controller.js";
 import {TripBoardController} from "./controllers/trip-board-controller.js";
 import {MenuTab} from "./config.js";
 import API from "./api.js";
+import MainController from "./controllers/main-controller";
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlElement = document.querySelector(`.trip-controls`);
@@ -22,11 +23,13 @@ const api = new API(URL, AUTHORIZATION);
 const eventDestinationStore = new EventDestinationStore();
 api.getDestinations().then((destinations) => {
   eventDestinationStore.setDestinations(destinations);
-});
+}, (error) => {eventDestinationStore.setErrors(error)});
 
 const eventOfferStore = new EventOfferStore();
 api.getOffers().then((offers) => {
   eventOfferStore.setOffers(offers);
+}, (error) => {
+  eventOfferStore.setErrors(error);
 });
 
 const tripEventStore = new TripEventStore(api);
@@ -35,10 +38,12 @@ api.getTripEvents().then((tripEvents) => {
   init();
 });
 
+const mainController = new MainController();
+
 const init = () => {
   const tripInfoController = new TripInfoController(tripMainElement, tripEventStore);
-  const tripMenuController = new MenuController(tripMainElement, tripEventStore);
-  const tripFilterController = new FilterController(headerFilterElement, tripEventStore);
+  const tripMenuController = new MenuController(tripMainElement, tripEventStore, mainController);
+  const tripFilterController = new FilterController(headerFilterElement, tripEventStore, mainController);
   const tripBoardController = new TripBoardController(tripEventsElement, tripEventStore);
   const tripStatsController = new TripStatsController(tripEventsElement, tripEventStore);
 

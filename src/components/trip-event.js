@@ -9,7 +9,7 @@ import EventOfferStore from "../models/event-offer-store";
 const createEventItemTemplate = (tripEvent) => {
   const {type, startDateTime, endDateTime, price} = tripEvent;
   const [title, startTime, endTime, duration] = [
-    getTitle(tripEvent),
+    tripEvent.getTitle(),
     formatToShortTime(startDateTime),
     formatToShortTime(endDateTime),
     durationDateTime(startDateTime, endDateTime),

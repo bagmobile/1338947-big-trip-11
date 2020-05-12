@@ -1,15 +1,16 @@
 import {Menu as MenuComponent} from "../components/menu.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {MenuTab} from "../config.js";
-import {NewEventBtn as NewEventBtnComponent} from "../components/new-event-btn";
-import TripEditEventController, {ModeEditEvent} from "./trip-edit-event-controller";
-import {getDefaultTripEvent} from "../models/trip-event-model";
+import {NewEventBtn as NewEventBtnComponent} from "../components/new-event-btn.js";
+import TripEditEventController, {ModeEditEvent} from "./trip-edit-event-controller.js";
+import {TripEventModel} from "../models/trip-event-model.js";
 
 export default class MenuController {
 
-  constructor(container, tripEventsModel) {
+  constructor(container, tripEventsModel, mainController) {
     this._container = container;
     this._tripEventsModel = tripEventsModel;
+    this._mainController = mainController;
     this._menuTabActionControllerMap = new Map();
     this._menuComponenet = new MenuComponent();
     this._newEventBtnComponent = new NewEventBtnComponent();
@@ -19,6 +20,8 @@ export default class MenuController {
 
     this._onNewEventBtnClick = this._onNewEventBtnClick.bind(this);
     this._newEventBtnComponent.setNewEventBtnClickHandler(this._onNewEventBtnClick);
+
+    this._mainController.addNewEventBtnClickListener(this._newEventBtnComponent);
   }
 
   setMenuTabActionController(menuAction) {
@@ -61,7 +64,7 @@ export default class MenuController {
 
   _onNewEventBtnClick() {
     const boardController = this._menuTabActionControllerMap.get(MenuTab.TABLE);
-    const tripEditEventController = new TripEditEventController(getDefaultTripEvent(), ModeEditEvent.NEW);
+    const tripEditEventController = new TripEditEventController(TripEventModel.getDefaultTripEvent(), ModeEditEvent.NEW);
     const activateBtnHandler = this._newEventBtnComponent.activateBtnHandler;
     const newEditEventPlaceClass = this._tripEventsModel.isEmpty() ? `.trip-events h2:first-child` : `.trip-events .trip-sort`;
 

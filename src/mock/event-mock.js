@@ -8,7 +8,7 @@ const MAX_DESTINATION_PICTURE = 3;
 const MAX_OFFER_COUNT = 7;
 const TRIP_RANGE_PRICE = [100, 500];
 
-const eventDestinationNames = [`Amsterdam`, `Geneva`, `Chamonix`, `Saint Peterburg`, `Moscow`, `Tver`, `Primorsk`];
+const eventDestinationNames = [`Amsterdam1`, `Geneva`, `Chamonix`, `Saint Peterburg`, `Moscow`, `Tver`, `Primorsk`];
 
 const offers = [
   {title: `Add luggage`, price: 30},

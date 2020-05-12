@@ -41,48 +41,41 @@ export class TripEventModel {
       "destination": tripEvent.destination,
     };
   }
-}
 
-export const getDefaultTripEvent = () => {
+  static getDefaultTripEvent() {
 
-  return new TripEventModel({
-    id: null,
-    type: getDefaultTripEventType(),
-    startDateTime: moment(new Date()).toISOString(true),
-    endDateTime: moment(new Date()).toISOString(true),
-    price: 0,
-    offers: [],
-    destination: {
-      description: ``,
-      name: ``,
-      pictures: [],
-    },
-    isFavorite: false,
-  });
-};
-
-export const getTitle = (tripEvent) => {
-  return `${getRoute(tripEvent.type)} ${tripEvent.destination.name}`;
-};
-
-export const getRoutePrefix = (tripEventType) => {
-  for (const [key, value] of config.tripEventTypes) {
-    if (value.includes(tripEventType)) {
-      return key;
-    }
+    return new TripEventModel({
+      id: null,
+      type: config.getDefaultTripEventType(),
+      startDateTime: moment(new Date()).toISOString(true),
+      endDateTime: moment(new Date()).toISOString(true),
+      price: 0,
+      offers: [],
+      destination: {
+        description: ``,
+        name: ``,
+        pictures: [],
+      },
+      isFavorite: false,
+    });
   }
-  return ``;
-};
 
-export const getRoute = (eventType) => {
-  return `${util.upperFirstChar(eventType)} ${getRoutePrefix(eventType)}`;
-};
+  getTitle() {
+    return `${this.getRoute(this.type)} ${this.destination.name}`;
+  }
 
-export const getTripEventTypes = () => {
-  return [...config.tripEventTypes.values()];
-};
+  getRoutePrefix(type) {
+    for (const [key, value] of config.tripEventTypes) {
+      if (value.includes(type)) {
+        return key;
+      }
+    }
+    return ``;
+  }
 
-export const getDefaultTripEventType = () => {
-  return getTripEventTypes()[0][0];
-};
+  getRoute(type) {
+    return `${util.upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
+  }
+
+}
 

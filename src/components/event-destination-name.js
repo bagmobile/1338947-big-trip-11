@@ -1,5 +1,4 @@
-import {getRoute} from "../models/trip-event-model.js";
-import AbstractComponent from "./abstract-component";
+import AbstractComponent from "./abstract-component.js";
 
 const createNameItemTemplate = (name) => {
   return (`<option value="${name}"></option>`);
@@ -7,14 +6,14 @@ const createNameItemTemplate = (name) => {
 
 const createNamesListTemplate = (tripEvent, names) => {
   const {type, destination} = tripEvent;
-  const route = `${getRoute(type)}`;
+  const route = `${tripEvent.getRoute(type)}`;
   const nameList = names.map((name) => createNameItemTemplate(name));
 
   return (`<div class="event__field-group  event__field-group--destination">
                         <label class="event__label  event__type-output" for="event-destination-1">
                           ${route}
                         </label>
-                        <input class="event__input  event__input--destination" id="event-destination-1" type="text" required name="event-destination" value="${destination.name}" list="destination-list-1">
+                        <input class="event__input  event__input--destination" id="event-destination-1" type="text" required name="event-destination" value="${destination.name}" list="destination-list-1" autocomplete="off">
                         <datalist id="destination-list-1">
                           ${nameList}
                         </datalist>
@@ -26,6 +25,7 @@ export class EventDestinationName extends AbstractComponent {
   constructor(tripEvent, eventDestinationStore) {
     super();
     this._tripEvent = tripEvent;
+    this._eventDestinationStore = eventDestinationStore;
     this._names = eventDestinationStore.getNames();
     this._eventDestinationNameChangeHandler = null;
   }
@@ -35,7 +35,7 @@ export class EventDestinationName extends AbstractComponent {
   }
 
   updateRoute(tripEventType) {
-    this.getElement().querySelector(`.event__type-output`).innerText = `${getRoute(tripEventType)}`;
+    this.getElement().querySelector(`.event__type-output`).innerText = `${this._tripEvent.getRoute(tripEventType)}`;
   }
 
   setEventDestinationNameChangeHandler(handler) {
@@ -47,7 +47,7 @@ export class EventDestinationName extends AbstractComponent {
         input.select();
         return;
       }
-      this._currentName = evt.target.value;
+      this._currentName = input.value;
       handler(this._currentName);
     });
     this._eventDestinationNameChangeHandler = handler;
