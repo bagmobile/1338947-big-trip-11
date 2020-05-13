@@ -1,4 +1,5 @@
 import moment from "moment";
+
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomNumber(0, array.length);
 

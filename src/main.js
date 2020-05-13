@@ -1,38 +1,34 @@
-import {TripBoardController} from "./controllers/trip-board-controller.js";
-import TripEventsModel from "./models/trip-events-model.js";
-import FilterController from "./controllers/filter-controller.js";
-import MenuController from "./controllers/menu-controllers.js";
-import {TripStatsController} from "./controllers/trip-stats-controller.js";
-import {MenuTab} from "./config.js";
-import TripInfoController from "./controllers/trip-info-controller.js";
-import TripDestinationsModel from "./models/trip-destinations-model";
-import {generateDestinations} from "./mock/event-mock.js";
-import TripOffersModel from "./models/trip-offers-model";
-import {generateEvents, generateTripOffers} from "./mock/event-mock";
+import MainController from "./controllers/main-controller";
+import TripEventStore from "./models/trip-event-store";
+import EventOfferStore from "./models/event-offer-store";
+import EventDestinationStore from "./models/event-destination-store";
+import API from "./api";
 
-const tripMainElement = document.querySelector(`.trip-main`);
-const tripControlElement = document.querySelector(`.trip-controls`);
-const tripEventsElement = document.querySelector(`.trip-events`);
-const headerFilterElement = tripControlElement.querySelector(`h2:last-child`);
+const URL = `https://11.ecmascript.pages.academy/big-trip`;
+const AUTHORIZATION = `Basic kTy9gIdsz2317rA`;
 
+const api = new API(URL, AUTHORIZATION);
+const eventDestinationStore = new EventDestinationStore();
+const eventOfferStore = new EventOfferStore();
+const tripEventStore = new TripEventStore(api);
 
-const tripEventsModel = new TripEventsModel();
-tripEventsModel.setTripEvents(generateEvents());
-const tripDestinationsModel = new TripDestinationsModel();
-tripDestinationsModel.setTripDestinations(generateDestinations());
-const tripOffersModel = new TripOffersModel();
-tripOffersModel.setTripOffers(generateTripOffers());
+const mainController = new MainController(tripEventStore);
+
+api.getDestinations().then((destinations) => {
+  eventDestinationStore.setDestinations(destinations);
+}, (error) => {
+  eventDestinationStore.setErrors(error);
+});
 
 
-const tripInfoController = new TripInfoController(tripMainElement, tripEventsModel);
-const tripMenuController = new MenuController(tripMainElement, tripEventsModel);
-const tripFilterController = new FilterController(headerFilterElement, tripEventsModel);
-const tripBoardController = new TripBoardController(tripEventsElement, tripEventsModel);
-const tripStatsController = new TripStatsController(tripEventsElement, tripEventsModel);
+api.getOffers().then((offers) => {
+  eventOfferStore.setOffers(offers);
+}, (error) => {
+  eventOfferStore.setErrors(error);
+});
 
-tripMenuController.setMenuTabActionController([MenuTab.TABLE, tripBoardController]);
-tripMenuController.setMenuTabActionController([MenuTab.STATS, tripStatsController]);
 
-tripInfoController.render();
-tripMenuController.render();
-tripFilterController.render();
+api.getTripEvents().then((tripEvents) => {
+  tripEventStore.setTripEvents(tripEvents);
+  mainController.init(tripEventStore);
+});

@@ -1,8 +1,8 @@
-import {TripEditEvent as TripEditEventComponent} from "../components/trip-edit-event.js";
-import {remove, render, RenderPosition, replace} from "../utils/render.js";
-import {isEscEvent} from "../utils/dom-utils.js";
-import TripEventsModel from "../models/trip-events-model.js";
-import {TripEventModel} from "../data/trip-event.js";
+import {isEscEvent} from "../utils/dom-utils";
+import {remove, render, RenderPosition} from "../utils/render";
+import TripEventModel from "../models/trip-event-model";
+import TripEventStore from "../models/trip-event-store";
+import {TripEditEventComponent} from "../components/trip-edit-event-component";
 
 export const ModeEditEvent = {
   NEW: `new`,
@@ -17,7 +17,7 @@ export default class TripEditEventController {
     this._mode = mode;
     this._sourceComponent = sourceComponent;
     this._editEventComponent = new TripEditEventComponent(this._tripEvent, this._mode);
-    this._tripEventsModel = new TripEventsModel();
+    this._tripEventStore = new TripEventStore();
 
     this._closeEditEventHandelrs = [];
 
@@ -31,11 +31,15 @@ export default class TripEditEventController {
     return this._editEventComponent;
   }
 
-  render(container) {
-    render(container, this._editEventComponent, RenderPosition.AFTERBEGIN);
+  getSourceComponent() {
+    return this._sourceComponent;
   }
 
-  setCloseEditEventFormHandler(handler) {
+  render(container) {
+    render(container, this._editEventComponent, RenderPosition.AFTEREND);
+  }
+
+  setCloseEditEventHandler(handler) {
     this._closeEditEventHandelrs.push(handler);
   }
 
@@ -46,11 +50,11 @@ export default class TripEditEventController {
 
       switch (mode) {
         case ModeEditEvent.NEW:
-          this._tripEventsModel.createTripEvent(new TripEventModel(tripEvent));
+          this._tripEventStore.createTripEvent(new TripEventModel(tripEvent));
           this._close();
           break;
         case ModeEditEvent.UPDATE:
-          this._tripEventsModel.updateTripEvent(this._tripEvent.id, new TripEventModel(tripEvent));
+          this._tripEventStore.updateTripEvent(this._tripEvent.id, new TripEventModel(tripEvent));
           break;
       }
     });
@@ -60,31 +64,27 @@ export default class TripEditEventController {
     });
 
     this._editEventComponent.setDeleteBtnClickHandler(() => {
-      this._tripEventsModel.deleteTripEvent(this._tripEvent.id);
+      this._tripEventStore.deleteTripEvent(this._tripEvent.id);
     });
 
     this._editEventComponent.setCancelBtnClickHandler(() => {
       this._close();
     });
 
-    this._editEventComponent.setFavoriteBtnClickHandler((iSFavoriteCurrent) => {
-      const updatedTripEvent = Object.assign({}, this._tripEvent, {isFavorite: iSFavoriteCurrent});
-      this._tripEvent.isFavorite = iSFavoriteCurrent;
-      this._tripEventsModel.updateTripEvent(this._tripEvent.id, new TripEventModel(updatedTripEvent), true);
+    this._editEventComponent.setFavoriteBtnClickHandler((isFavoriteCurrent) => {
+      const updatedTripEvent = Object.assign({}, this._tripEvent, {isFavorite: isFavoriteCurrent});
+      this._tripEvent.isFavorite = isFavoriteCurrent;
+      this._tripEventStore.updateTripEvent(this._tripEvent.id, new TripEventModel(updatedTripEvent), true);
     });
   }
 
-  _destroy() {
+  destroyComponent() {
     remove(this._editEventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _close(isSelf = true) {
-    if (this._sourceComponent) {
-      replace(this._sourceComponent, this._editEventComponent);
-    }
-    this._destroy();
-    this._callHandlers(this._closeEditEventHandelrs, isSelf);
+  _close() {
+    this._callHandlers(this._closeEditEventHandelrs);
   }
 
   _onEscKeyDown(evt) {

@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
-import {DayListType, SortType} from "../config.js";
+import {DayListType, SortType} from "../config";
+import AbstractComponent from "./abstract-component";
 
 const createDayListTemplate = (list) => {
 
@@ -51,11 +51,11 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
   return createDayListTemplate(eventList);
 };
 
-export class DayList extends AbstractComponent {
+export class DayListComponent extends AbstractComponent {
 
-  constructor(tripEventsModel, type) {
+  constructor(tripEventStore, type) {
     super();
-    this._tripEventsModel = tripEventsModel;
+    this._tripEventStore = tripEventStore;
     this._type = type;
   }
 
@@ -72,12 +72,16 @@ export class DayList extends AbstractComponent {
   getTemplate() {
     switch (this._type) {
       case DayListType.ORDERED:
-        return getOrderedListTemplate(this._tripEventsModel.getTripEvents());
+        return getOrderedListTemplate(this._tripEventStore.getTripEvents());
       case DayListType.GROUPED:
-        return getGroupByDayListTemplate(this._tripEventsModel.getGroupByDaysTripEvents());
+        return getGroupByDayListTemplate(this._tripEventStore.getTripEventsGroupByDays());
       default:
         return ``;
     }
+  }
+
+  getEventItemElements() {
+    return this.getElement().querySelectorAll(`.trip-events__item`);
   }
 
 }

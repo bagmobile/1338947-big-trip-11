@@ -28,7 +28,7 @@ export const formatDatePeriod = (startDateTime, endDateTime) => {
   ].join(` - `);
 };
 
-export const getFlatpickr = (dateTime, element, handler) => {
+export const getFlatpickr = (dateTime, element) => {
   // noinspection JSValidateTypes
   return flatpickr(element, {
     dateFormat: `d/m/y H:i`,
@@ -37,9 +37,6 @@ export const getFlatpickr = (dateTime, element, handler) => {
     minuteIncrement: 1,
     allowInput: true,
     defaultDate: dateTime || new Date(),
-    onChange: () => {
-      handler();
-    },
   });
 };
 

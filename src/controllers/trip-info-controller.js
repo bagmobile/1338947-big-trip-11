@@ -1,16 +1,17 @@
-import {render, RenderPosition} from "../utils/render.js";
-import {TripInfo as TripInfoComponent} from "../components/trip-info.js";
-import {remove} from "../utils/render.js";
+import {remove, render, RenderPosition} from "../utils/render";
+import {TripInfoComponent} from "../components/trip-info-component";
+import MainController from "./main-controller";
 
 export default class TripInfoController {
-  constructor(container, tripEventsModel) {
+
+  constructor(container) {
     this._container = container;
-    this._tripEventsModel = tripEventsModel;
-    this._tripInfoComponent = new TripInfoComponent(this._tripEventsModel);
+    this._tripEventStore = new MainController().getTripEventStore();
+    this._tripInfoComponent = new TripInfoComponent(this._tripEventStore);
 
     this._onRefreshTripInfo = this._onRefreshTripInfo.bind(this);
-    this._tripEventsModel.setFilterTypeChangeHandler(this._onRefreshTripInfo);
-    this._tripEventsModel.setDataChangeHandler(this._onRefreshTripInfo);
+    this._tripEventStore.setFilterTypeChangeHandler(this._onRefreshTripInfo);
+    this._tripEventStore.setDataChangeHandler(this._onRefreshTripInfo);
   }
 
   render() {
@@ -21,6 +22,5 @@ export default class TripInfoController {
     remove(this._tripInfoComponent);
     this.render();
   }
-
 
 }

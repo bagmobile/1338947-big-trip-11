@@ -1,15 +1,18 @@
-import {FilterType, SortType} from "../config.js";
-import {formatShortDate} from "../utils/common.js";
-import {formatDatePeriod} from "../utils/common";
+import {FilterType, SortType, TRIP_INFO_COUNT_DESTINATION_NAME} from "../config";
+import {formatDatePeriod, formatShortDate} from "../utils/common";
+import TripEventModel from "./trip-event-model";
+import AbstractStore from "./abstract-store";
 
-export default class TripEventsModel {
 
-  constructor() {
+export default class TripEventStore extends AbstractStore {
 
-    if (!TripEventsModel.instance) {
-      TripEventsModel.instance = this;
+  constructor(api) {
+    super();
 
-      this._tripEvents = [];
+    if (!TripEventStore.instance) {
+      TripEventStore.instance = this;
+      this._api = api;
+      this._tripEvents = new Map();
 
       this._currentFilterType = FilterType.EVERYTHING;
       this._currentSortType = SortType.EVENT;
@@ -20,11 +23,15 @@ export default class TripEventsModel {
       this._sortTypeChangeHandlers = [];
     }
 
-    return TripEventsModel.instance;
+    return TripEventStore.instance;
+  }
+
+  static parse(tripEvents) {
+    return tripEvents.map((tripEvent) => TripEventModel.parse(tripEvent));
   }
 
   isEmpty() {
-    return this._tripEvents.length === 0;
+    return Array.from(this._tripEvents.values()).length === 0;
   }
 
   getTripEvents() {
@@ -33,45 +40,37 @@ export default class TripEventsModel {
   }
 
   setTripEvents(tripEvents) {
-    this._tripEvents = this.getTripEventsBySort(tripEvents);
-    this._callHandlers(this._dataChangeHandlers);
+    tripEvents.forEach((tripEvent) => {
+      this._tripEvents.set(tripEvent.id, tripEvent);
+    });
   }
 
-  createTripEvent(tripEvent) {
-    this._tripEvents = [].concat(tripEvent, this._tripEvents);
-    this._callHandlers(this._dataChangeHandlers);
+  createTripEvent(newTripEvent) {
+    this._api.createTripEvent(newTripEvent).then((tripEvent) => {
+      this._tripEvents.set(tripEvent.id, tripEvent);
+      this._callHandlers(this._dataChangeHandlers);
+    });
   }
 
-  updateTripEvent(id, tripEvent, isForced = false) {
-    const index = this._tripEvents.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._tripEvents.splice(index, 1, tripEvent);
-
-    if (isForced) {
-      this._callRefreshTripEventHandler(tripEvent);
-      return true;
-    }
-
-    this._callHandlers(this._dataChangeHandlers, tripEvent);
-    return true;
+  updateTripEvent(id, newTripEvent, isForced = false) {
+    this._api.updateTripEvent(id, newTripEvent).then((tripEvent) => {
+      this._tripEvents.set(tripEvent.id, tripEvent);
+      if (isForced) {
+        this._callRefreshTripEventHandler(tripEvent);
+        return;
+      }
+      this._callHandlers(this._dataChangeHandlers, tripEvent);
+    });
   }
 
   deleteTripEvent(id) {
-    const index = this._tripEvents.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-    this._tripEvents.splice(index, 1);
-    this._callHandlers(this._dataChangeHandlers);
-    return true;
+    this._api.deleteTripEvent(id).then(() => {
+      this._tripEvents.delete(id);
+      this._callHandlers(this._dataChangeHandlers);
+    });
   }
 
-  getGroupByDaysTripEvents() {
+  getTripEventsGroupByDays() {
     const tripEvents = this.getTripEvents();
     let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.startDateTime)), new Set())];
     return uniqueDays.reduce((acc, day, index) => {
@@ -83,9 +82,11 @@ export default class TripEventsModel {
     }, []);
   }
 
-  setSort(sortType) {
+  setSort(sortType, isCallHandler = true) {
     this._currentSortType = sortType;
-    this._callHandlers(this._sortTypeChangeHandlers);
+    if (isCallHandler) {
+      this._callHandlers(this._sortTypeChangeHandlers);
+    }
   }
 
   getTripEventsBySort(tripEvents) {
@@ -106,31 +107,31 @@ export default class TripEventsModel {
     }
   }
 
-  setFilter(filterType) {
+  setFilter(filterType, isCallHandler = true) {
     this._currentFilterType = filterType;
     this._currentSortType = SortType.EVENT;
-    this._callHandlers(this._filterTypeChangeHandlers);
+    if (isCallHandler) {
+      this._callHandlers(this._filterTypeChangeHandlers);
+    }
   }
 
   getTripEventsByFilter() {
     switch (this._currentFilterType) {
-      case FilterType.EVERYTHING:
-        return this._tripEvents;
       case FilterType.FUTURE:
         return this.getFilterFuture();
       case FilterType.PAST:
         return this.getFilterPast();
       default:
-        return this._tripEvents;
+        return Array.from(this._tripEvents.values());
     }
   }
 
   getFilterFuture() {
-    return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) >= new Date());
+    return Array.from(this._tripEvents.values()).filter((tripEvent) => new Date(tripEvent.startDateTime) >= new Date());
   }
 
   getFilterPast() {
-    return this._tripEvents.filter((tripEvent) => new Date(tripEvent.startDateTime) < new Date());
+    return Array.from(this._tripEvents.values()).filter((tripEvent) => new Date(tripEvent.endDateTime) < new Date());
   }
 
   getCost(tripEvents) {
@@ -145,23 +146,19 @@ export default class TripEventsModel {
   }
 
   getPeriod(tripEvents) {
-    if (tripEvents.length === 0) {
-      return ``;
-    }
-    return formatDatePeriod(tripEvents[0].startDateTime, tripEvents[tripEvents.length - 1].endDateTime);
+    return this.isEmpty() ? `` : formatDatePeriod(tripEvents[0].startDateTime, tripEvents[tripEvents.length - 1].endDateTime);
   }
 
   getTitle(tripEvents) {
-    const TITLE_COUNT_TOWN = 3;
-    const towns = tripEvents.map((item) => item.destination.name);
-    if (towns.length === 0) {
+    const names = tripEvents.map((item) => item.destination.name);
+    if (names.length === 0) {
       return ``;
     }
-    const [first, last] = [towns[0], towns[towns.length - 1]];
-    if (towns.length > TITLE_COUNT_TOWN) {
+    const [first, last] = [names[0], names[names.length - 1]];
+    if (names.length > TRIP_INFO_COUNT_DESTINATION_NAME) {
       return `${first} - ... - ${last}`;
     } else {
-      return towns.join(` - `);
+      return names.join(` - `);
     }
   }
 
@@ -174,16 +171,16 @@ export default class TripEventsModel {
     };
   }
 
-  setFilterTypeChangeHandler(handler) {
-    this._filterTypeChangeHandlers.push(handler);
-  }
-
   getAvailableFilterTypes() {
     return {
       [FilterType.EVERYTHING]: !this.isEmpty(),
       [FilterType.FUTURE]: this.getFilterFuture().length > 0,
-      [FilterType.PAST]: this.getFilterPast(). length > 0,
+      [FilterType.PAST]: this.getFilterPast().length > 0,
     };
+  }
+
+  setFilterTypeChangeHandler(handler) {
+    this._filterTypeChangeHandlers.push(handler);
   }
 
   setSortTypeChangeHandler(handler) {
@@ -207,3 +204,4 @@ export default class TripEventsModel {
   }
 
 }
+

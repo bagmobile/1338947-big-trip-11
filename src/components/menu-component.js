@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
-import {MenuTab} from "../config.js";
+import {MenuTab} from "../config";
+import AbstractComponent from "./abstract-component";
 
 const createMenuTab = (tab, isActive) => {
   const tabActiveClass = isActive ? `trip-tabs__btn--active` : ``;
@@ -13,7 +13,8 @@ const createMenuTemplate = (tabs, menuTab) => {
   return (`<nav class="trip-controls__trip-tabs  trip-tabs">${tabsList}</nav>`);
 };
 
-export class Menu extends AbstractComponent {
+export class MenuComponent extends AbstractComponent {
+
   constructor(menuTab = MenuTab.TABLE) {
     super();
     this._currentMenuTab = menuTab;
@@ -31,7 +32,7 @@ export class Menu extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       if (this._currentMenuTab !== evt.target.innerText) {
         this._currentMenuTab = evt.target.innerText;
-        handler(this._currentMenuTab);
+        handler();
       }
     });
 

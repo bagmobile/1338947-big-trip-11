@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createEventDetailsTemplate = () => {
 
@@ -6,7 +6,7 @@ const createEventDetailsTemplate = () => {
                     </section>`);
 };
 
-export class EventDetails extends AbstractComponent {
+export class EventDetailsComponent extends AbstractComponent {
 
   getTemplate() {
     return createEventDetailsTemplate();

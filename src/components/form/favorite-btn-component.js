@@ -1,5 +1,5 @@
-import AbstractComponent from "../abstract-component.js";
 import {createHTMLCollection} from "../../utils/render";
+import AbstractComponent from "../abstract-component";
 
 const createFavoriteButtonTemplate = (isChecked) => {
   const checked = isChecked ? `checked` : ``;
@@ -13,7 +13,7 @@ const createFavoriteButtonTemplate = (isChecked) => {
 </label>`);
 };
 
-export class FavoriteBtn extends AbstractComponent {
+export class FavoriteBtnComponent extends AbstractComponent {
 
   constructor(isChecked) {
     super();

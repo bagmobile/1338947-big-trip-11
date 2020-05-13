@@ -1,10 +1,10 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createNewEventButtonTemplate = () => {
   return (`<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`);
 };
 
-export class NewEventBtn extends AbstractComponent {
+export class NewEventBtnComponent extends AbstractComponent {
 
 
   getTemplate() {
@@ -16,11 +16,6 @@ export class NewEventBtn extends AbstractComponent {
       evt.target.setAttribute(`disabled`, true);
       handler();
     });
-  }
-
-  activateBtnHandler(boardController) {
-    boardController.setActiveTripEditEventController(null);
-    this.getElement().removeAttribute(`disabled`);
   }
 
 }

@@ -1,7 +1,7 @@
 const KeyButton = {
   ESC_KEY: `Escape`,
   ENTER_KEY: `Enter`,
-  SPACE_KEY: ``
+  SPACE_KEY: ``,
 };
 
 export const isEscEvent = function (evt, onKeyDown) {

@@ -1,4 +1,4 @@
-import AbstractComponent from "../abstract-component.js";
+import AbstractComponent from "../abstract-component";
 
 const createRollupBtnTemplate = () => {
   return (`<button class="event__rollup-btn" type="button">
@@ -6,7 +6,7 @@ const createRollupBtnTemplate = () => {
 </button>`);
 };
 
-export class RollupBtn extends AbstractComponent {
+export class RollupBtnComponent extends AbstractComponent {
 
   getTemplate() {
     return createRollupBtnTemplate();

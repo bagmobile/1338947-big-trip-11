@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
-import {SortType} from "../config.js";
+import {SortType} from "../config";
+import AbstractComponent from "./abstract-component";
 
 const createSortElement = (sort, isChecked) => {
   const {name, isHeader} = sort;
@@ -32,7 +32,7 @@ const createSortTemplate = (sort, sortType) => {
           </form>`);
 };
 
-export class Sort extends AbstractComponent {
+export class SortComponent extends AbstractComponent {
 
   constructor(sortType = SortType.EVENT) {
     super();

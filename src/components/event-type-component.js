@@ -1,9 +1,9 @@
-import {getTripEventTypes} from "../data/trip-event.js";
-import * as util from "../utils/utils.js";
 import AbstractComponent from "./abstract-component";
+import {getTripEventTypes} from "../config";
+import * as utils from "../utils/utils";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
-  const lowerName = util.upperFirstChar(name);
+  const lowerName = utils.upperFirstChar(name);
   const checked = isChecked ? `checked` : ``;
 
   return (`<div class="event__type-item">
@@ -42,7 +42,7 @@ const createEventTypeListTemplate = (tripEvent, currentEventType) => {
 </div>`);
 };
 
-export class EventType extends AbstractComponent {
+export class EventTypeComponent extends AbstractComponent {
 
   constructor(tripEvent) {
     super();
@@ -58,7 +58,8 @@ export class EventType extends AbstractComponent {
   setEventTypeChangeHandler(handler) {
     this.getElement().querySelectorAll(`.event__type-group`)
       .forEach((item) => item.addEventListener(`change`, (evt) => {
-        this._currentEventType = evt.target.value;
+        const selectElement = evt.target;
+        this._currentEventType = selectElement.value;
         this.rerender();
         handler(this._currentEventType);
       }));
