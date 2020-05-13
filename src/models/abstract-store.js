@@ -16,7 +16,4 @@ export default class AbstractStore {
     return this._errors.length > 0;
   }
 
-  cleanErrors() {
-    this._errors = null;
-  }
 }

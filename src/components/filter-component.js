@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
-import {FilterType} from "../config.js";
+import {FilterType} from "../config";
+import AbstractComponent from "./abstract-component";
 
 const createFilterElement = (filter, isChecked, isHidden) => {
   const checked = isChecked ? `checked` : ``;
@@ -27,7 +27,7 @@ const createFilterTemplate = (filters, filterType, options) => {
     </form>`);
 };
 
-export class Filter extends AbstractComponent {
+export class FilterComponent extends AbstractComponent {
 
   constructor(tripEventStore, filterType = FilterType.EVERYTHING) {
     super();

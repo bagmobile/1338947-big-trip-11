@@ -1,7 +1,7 @@
 import EventDestinationModel from "./event-destination-model";
 import AbstractStore from "./abstract-store";
 
-export default class EventDestinationStore extends AbstractStore{
+export default class EventDestinationStore extends AbstractStore {
 
   constructor(destinations) {
     super();

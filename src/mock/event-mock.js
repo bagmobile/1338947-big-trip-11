@@ -1,6 +1,6 @@
-import * as util from "../utils/utils.js";
-import * as config from "../config.js";
-import {TripEventModel} from "../models/trip-event-model";
+import TripEventModel from "../models/trip-event-model";
+import * as config from "../config";
+import * as utils from "../utils/utils";
 
 const MAX_EVENT_COUNT = 12;
 const MAX_DESTINATION_SENTENCE = 5;
@@ -43,41 +43,41 @@ const getEventTypes = () => {
 };
 
 const getEventDestinationName = () => {
-  return util.getRandomArrayItem(eventDestinationNames);
+  return utils.getRandomArrayItem(eventDestinationNames);
 };
 
 const getPrice = () => {
-  return util.getRandomNumber(...TRIP_RANGE_PRICE);
+  return utils.getRandomNumber(...TRIP_RANGE_PRICE);
 };
 
 const generateType = () => {
   const [transport, activity] = getEventTypes();
-  return util.getRandomArrayItem([...transport, ...activity]);
+  return utils.getRandomArrayItem([...transport, ...activity]);
 };
 
 const getDateTime = () => {
-  return (util.getRandomDate(true, util.getRandomNumber(10, 400)));
+  return (utils.getRandomDate(true, utils.getRandomNumber(10, 400)));
 };
 
 const getTripEventOffers = () => {
-  return offers.slice(util.getRandomNumber(0, 3), util.getRandomNumber(0, MAX_OFFER_COUNT));
+  return offers.slice(utils.getRandomNumber(0, 3), utils.getRandomNumber(0, MAX_OFFER_COUNT));
 };
 
 const getDestination = () => {
   return {
-    description: destinations.slice(util.getRandomNumber(0, 4), MAX_DESTINATION_SENTENCE).join(`\n`),
+    description: destinations.slice(utils.getRandomNumber(0, 4), MAX_DESTINATION_SENTENCE).join(`\n`),
     name: getEventDestinationName(),
     pictures: (new Array(MAX_DESTINATION_PICTURE))
       .fill({})
       .map(() => ({
-        src: `http://picsum.photos/248/152?r=${util.getRandomNumber(0, 500)}`,
+        src: `http://picsum.photos/248/152?r=${utils.getRandomNumber(0, 500)}`,
         description: `---`,
       })),
   };
 };
 
 const getFavorite = () => {
-  return Boolean(Math.floor(util.getRandomNumber(0, 2)));
+  return Boolean(Math.floor(utils.getRandomNumber(0, 2)));
 };
 
 const generateMockTripEvent = () => {

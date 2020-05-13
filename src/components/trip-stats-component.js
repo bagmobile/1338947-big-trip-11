@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createTripStatisticsTemplate = () => {
   return (`<section class="statistics">
@@ -18,7 +18,7 @@ const createTripStatisticsTemplate = () => {
         </section>`);
 };
 
-export class TripStats extends AbstractComponent {
+export class TripStatsComponent extends AbstractComponent {
 
   getTemplate() {
     return createTripStatisticsTemplate();

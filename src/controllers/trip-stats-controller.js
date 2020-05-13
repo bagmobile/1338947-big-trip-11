@@ -1,20 +1,11 @@
-import {TripStats as TripStatsComponent} from "../components/trip-stats.js";
-import {render, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition} from "../utils/render";
+import {TripStatsComponent} from "../components/trip-stats-component";
 
 export default class TripStatsController {
 
-  constructor(container, tripEventsModel) {
+  constructor(container) {
     this._container = container;
-    this._tripEventModel = tripEventsModel;
     this._tripiStatsComponent = new TripStatsComponent();
-  }
-
-  showStats() {
-    this._tripiStatsComponent.show();
-  }
-
-  hideStats() {
-    this._tripiStatsComponent.hide();
   }
 
   render() {

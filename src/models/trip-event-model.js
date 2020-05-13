@@ -1,8 +1,8 @@
-import * as util from "../utils/utils.js";
-import * as config from "../config.js";
+import * as config from "../config";
 import moment from "moment";
+import * as utils from "../utils/utils";
 
-export class TripEventModel {
+export default class TripEventModel {
 
   constructor(data) {
     this.id = data.id;
@@ -74,7 +74,7 @@ export class TripEventModel {
   }
 
   getRoute(type) {
-    return `${util.upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
+    return `${utils.upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
   }
 
 }

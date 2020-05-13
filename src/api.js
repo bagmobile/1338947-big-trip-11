@@ -1,7 +1,7 @@
-import EventDestinationStore from "./models/event-destination-store.js";
-import EventOfferStore from "./models/event-offer-store.js";
+import TripEventModel from "./models/trip-event-model";
+import EventOfferStore from "./models/event-offer-store";
+import EventDestinationStore from "./models/event-destination-store";
 import TripEventStore from "./models/trip-event-store";
-import {TripEventModel} from "./models/trip-event-model";
 
 const Method = {
   GET: `GET`,

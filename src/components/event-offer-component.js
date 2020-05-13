@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
-import {MAX_COUNT_OFFER_SHOW} from "../config.js";
+import {MAX_COUNT_OFFER_SHOW} from "../config";
+import AbstractComponent from "./abstract-component";
 
 export const OfferListType = {
   SHORT_TEXT_LIST: `shortTextList`,
@@ -70,7 +70,7 @@ const createErrorTemplate = () => {
 </section>`);
 };
 
-export class EventOffer extends AbstractComponent {
+export class EventOfferComponent extends AbstractComponent {
 
   constructor(tripEvent, eventOfferStore, offerListType, newEventType) {
     super();
@@ -92,7 +92,7 @@ export class EventOffer extends AbstractComponent {
         template = createSelectedOffersListTemplate(selectedOffers);
         break;
       case OfferListType.AVAILABLE_OPTION_LIST:
-        const availableOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, []);
+        const availableOffers = this._eventOfferStore.getSelectedOffers(this._newEventType, []);
         template = createAvailableOffersListTemplate(availableOffers, this._newEventType);
     }
     return this._eventOfferStore.hasErrors() ? createErrorTemplate() : template;

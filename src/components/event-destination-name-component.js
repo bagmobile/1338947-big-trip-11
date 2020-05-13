@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createNameItemTemplate = (name) => {
   return (`<option value="${name}"></option>`);
@@ -20,7 +20,7 @@ const createNamesListTemplate = (tripEvent, names) => {
                       </div>`);
 };
 
-export class EventDestinationName extends AbstractComponent {
+export class EventDestinationNameComponent extends AbstractComponent {
 
   constructor(tripEvent, eventDestinationStore) {
     super();

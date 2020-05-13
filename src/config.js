@@ -1,4 +1,5 @@
 export const MAX_COUNT_OFFER_SHOW = 3;
+export const TRIP_INFO_COUNT_DESTINATION_NAME = 3;
 
 export const tripEventTypes = new Map([
   [`to`, [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`]],

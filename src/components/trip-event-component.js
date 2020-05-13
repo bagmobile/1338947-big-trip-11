@@ -1,10 +1,9 @@
-import AbstractComponent from "./abstract-component.js";
-import {getTitle} from "../models/trip-event-model.js";
-import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
-import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
-import {durationDateTime, formatToShortTime} from "../utils/common.js";
-import {createElement} from "../utils/render.js";
+import {createElement} from "../utils/render";
+import {EventOfferComponent, OfferListType} from "./event-offer-component";
+import {RollupBtnComponent} from "./form/rollup-btn-component";
 import EventOfferStore from "../models/event-offer-store";
+import AbstractComponent from "./abstract-component";
+import {durationDateTime, formatToShortTime} from "../utils/common";
 
 const createEventItemTemplate = (tripEvent) => {
   const {type, startDateTime, endDateTime, price} = tripEvent;
@@ -37,7 +36,7 @@ const createEventItemTemplate = (tripEvent) => {
                 </li>`);
 };
 
-export class TripEvent extends AbstractComponent {
+export class TripEventComponent extends AbstractComponent {
 
   constructor(tripEvent) {
     super();

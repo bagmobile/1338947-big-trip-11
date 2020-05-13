@@ -1,10 +1,10 @@
-import AbstractComponent from "../abstract-component.js";
+import AbstractComponent from "../abstract-component";
 
 const createCancelButtonTemplate = () => {
   return (`<button class="event__reset-btn" type="reset">Cancel</button>`);
 };
 
-export class CancelBtn extends AbstractComponent {
+export class CancelBtnComponent extends AbstractComponent {
 
   getTemplate() {
     return createCancelButtonTemplate();

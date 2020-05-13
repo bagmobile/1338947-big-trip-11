@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractComponent from "./abstract-component";
 
 const createPictureItemTemplate = (picture) => {
   const {src, description} = picture;
@@ -25,7 +25,7 @@ const createEventDestinationTemplate = (destination) => {
 `);
 };
 
-export class EventDestination extends AbstractComponent {
+export class EventDestinationComponent extends AbstractComponent {
 
   constructor(tripDestinationsModel, destination, currentName = null) {
     super();

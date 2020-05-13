@@ -1,21 +1,19 @@
-import "flatpickr/dist/flatpickr.min.css";
-import {EventDestinationName as EventDestinationNameComponent} from "./event-destination-name.js";
-import {EventType as EventTypeComponent} from "./event-type.js";
-import {RollupBtn as RollupBtnComponent} from "./form/rollup-btn.js";
-import {SaveBtn as SaveBtnComponent} from "./form/save-btn.js";
-import {DeleteBtn as DeleteBtnComponent} from "./form/delete-btn.js";
-import {FavoriteBtn as FavoriteBtnComponent} from "./form/favorite-btn.js";
-import {CancelBtn as CancelBtnComponent} from "./form/cancel-btn.js";
-import {EventError as EventErrorComponent} from "./event-error.js";
-import {formatToDefault, getFlatpickr} from "../utils/common.js";
-import {createElement} from "../utils/render.js";
-import {EventOffer as EventOfferComponent, OfferListType} from "./event-offer.js";
-import {EventDestination as EventDestinationComponent} from "./event-destination.js";
-import EventOfferStore from "../models/event-offer-store";
-import {EventDetails} from "./event-details";
+import {createElement, remove, render, RenderPosition} from "../utils/render";
+import {EventDestinationComponent} from "./event-destination-component";
+import {EventOfferComponent, OfferListType} from "./event-offer-component";
+import {ModeEditEvent} from "../controllers/trip-edit-event-controller";
+import {formatToDefault, getFlatpickr} from "../utils/common";
+import {EventDetailsComponent} from "./event-details-component";
+import {SaveBtnComponent} from "./form/save-btn-component";
+import {CancelBtnComponent} from "./form/cancel-btn-component";
+import {DeleteBtnComponent} from "./form/delete-btn-component";
+import {FavoriteBtnComponent} from "./form/favorite-btn-component";
+import {RollupBtnComponent} from "./form/rollup-btn-component";
+import {EventDestinationNameComponent} from "./event-destination-name-component";
+import {EventTypeComponent} from "./event-type-component";
+import {EventErrorComponent} from "./event-error-component";
 import EventDestinationStore from "../models/event-destination-store";
-import {ModeEditEvent} from "../controllers/trip-edit-event-controller.js";
-import {remove, render, RenderPosition} from "../utils/render";
+import EventOfferStore from "../models/event-offer-store";
 import AbstractComponent from "./abstract-component";
 
 const createEditEventTemplate = (tripEvent, isNew) => {
@@ -49,7 +47,7 @@ const createEditEventTemplate = (tripEvent, isNew) => {
                   </form>`);
 };
 
-export class TripEditEvent extends AbstractComponent {
+export class TripEditEventComponent extends AbstractComponent {
 
   constructor(tripEvent, mode) {
     super();
@@ -57,7 +55,7 @@ export class TripEditEvent extends AbstractComponent {
     this._tripEvent = tripEvent;
     this._startTimeFlatpickr = null;
     this._endTimeFlatpickr = null;
-    this._IsFavoriteCurrent = this._tripEvent.isFavorite;
+    this._isFavoriteCurrent = this._tripEvent.isFavorite;
 
     this._eventOfferStore = new EventOfferStore();
     this._eventDestinationStore = new EventDestinationStore();
@@ -70,7 +68,7 @@ export class TripEditEvent extends AbstractComponent {
     this._deleteBtnComponent = new DeleteBtnComponent();
     this._cancelBtnComponent = new CancelBtnComponent();
     this._saveBtnComponent = new SaveBtnComponent();
-    this._eventDetailsComponent = new EventDetails();
+    this._eventDetailsComponent = new EventDetailsComponent();
     this._eventOfferComponent = new EventOfferComponent(this._tripEvent, this._eventOfferStore, OfferListType.CHECKED_OPTION_LIST);
     this._eventDestinationComponent = new EventDestinationComponent(this._eventDestinationStore, this._tripEvent.destination);
 
@@ -116,7 +114,7 @@ export class TripEditEvent extends AbstractComponent {
       price: Number(price),
       destination: this._eventDestinationStore.hasErrors() ? this._tripEvent.destination : this._eventDestinationStore.getDestination(name),
       offers: this._getSelectedOffers(type),
-      isFavorite: this._IsFavoriteCurrent,
+      isFavorite: this._isFavoriteCurrent,
     });
   }
 
@@ -145,8 +143,8 @@ export class TripEditEvent extends AbstractComponent {
 
   setFavoriteBtnClickHandler(handler) {
     this._favoriteBtnComponent.getElement().addEventListener(`click`, () => {
-      this._IsFavoriteCurrent = !this._tripEvent.isFavorite;
-      handler(this._IsFavoriteCurrent);
+      this._isFavoriteCurrent = !this._tripEvent.isFavorite;
+      handler(this._isFavoriteCurrent);
     });
   }
 
@@ -210,7 +208,7 @@ export class TripEditEvent extends AbstractComponent {
     this._eventOfferComponent.hide();
     this._eventDestinationComponent.hide();
 
-    if (this._eventDestinationStore.hasErrors()){
+    if (this._eventDestinationStore.hasErrors()) {
       this._eventErrorComponent.show();
     }
 
