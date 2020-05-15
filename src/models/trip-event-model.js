@@ -1,6 +1,6 @@
 import * as config from "../config";
 import moment from "moment";
-import * as utils from "../utils/utils";
+import {upperFirstChar} from "../utils/common";
 
 export default class TripEventModel {
 
@@ -74,7 +74,7 @@ export default class TripEventModel {
   }
 
   getRoute(type) {
-    return `${utils.upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
+    return `${upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
   }
 
 }

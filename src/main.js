@@ -30,5 +30,5 @@ api.getOffers().then((offers) => {
 
 api.getTripEvents().then((tripEvents) => {
   tripEventStore.setTripEvents(tripEvents);
-  mainController.init(tripEventStore);
+  mainController.init();
 });

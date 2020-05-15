@@ -1,9 +1,9 @@
 import AbstractComponent from "./abstract-component";
 import {getTripEventTypes} from "../config";
-import * as utils from "../utils/utils";
+import {upperFirstChar} from "../utils/common";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
-  const lowerName = utils.upperFirstChar(name);
+  const lowerName = upperFirstChar(name);
   const checked = isChecked ? `checked` : ``;
 
   return (`<div class="event__type-item">
