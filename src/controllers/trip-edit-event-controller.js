@@ -1,8 +1,8 @@
-import {isEscEvent} from "../utils/dom-utils";
 import {remove, render, RenderPosition} from "../utils/render";
 import TripEventModel from "../models/trip-event-model";
 import TripEventStore from "../models/trip-event-store";
 import {TripEditEventComponent} from "../components/trip-edit-event-component";
+import {isEscEvent} from "../utils/common";
 
 export const ModeEditEvent = {
   NEW: `new`,

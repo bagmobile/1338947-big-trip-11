@@ -13,6 +13,7 @@ import TripBoardController from "./trip-board-controller";
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
+const tripStatsElement = document.querySelector(`.page-main .page-body__container`);
 
 export default class MainController {
 
@@ -36,9 +37,9 @@ export default class MainController {
   init() {
 
     this._controllers.set(TripInfoController.name, new TripInfoController(tripMainElement));
-    this._controllers.set(TripStatsController.name, new TripStatsController(tripEventsElement));
     this._controllers.set(NewEventController.name, new NewEventController(tripMainElement));
     this._controllers.set(MenuController.name, new MenuController(tripControlElement));
+    this._controllers.set(TripStatsController.name, new TripStatsController(tripStatsElement));
     this._controllers.set(FilterController.name, new FilterController(tripControlElement));
     this._controllers.set(SortController.name, new SortController(tripEventsElement));
     this._controllers.set(TripBoardController.name, new TripBoardController(tripEventsElement));
@@ -48,6 +49,7 @@ export default class MainController {
     });
 
     this.getController(MenuController.name).showTab();
+    this.getController(TripStatsController.name).init();
 
     this._onSubscribeOnEvents();
   }

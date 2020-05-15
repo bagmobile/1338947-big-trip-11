@@ -1,5 +1,6 @@
 export const MAX_COUNT_OFFER_SHOW = 3;
 export const TRIP_INFO_COUNT_DESTINATION_NAME = 3;
+export const STATS_BAR_HEIGHT = 36;
 
 export const tripEventTypes = new Map([
   [`to`, [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`]],
@@ -32,6 +33,13 @@ export const DayListType = {
 
 export const getTripEventTypes = () => {
   return [...tripEventTypes.values()];
+};
+
+export const getTripEventTypesList = () => {
+  return getTripEventTypes().reduce((acc, item) => {
+    acc.push(...item);
+    return acc;
+  }, []);
 };
 
 export const getDefaultTripEventType = () => {
