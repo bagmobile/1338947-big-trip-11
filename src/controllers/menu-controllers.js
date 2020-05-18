@@ -2,6 +2,7 @@ import {remove, render, RenderPosition} from "../utils/render";
 import {MenuComponent} from "../components/menu-component";
 import {HIDDEN_CLASS} from "../components/abstract-component";
 import {MenuTab} from "../config";
+import MainController from "./main-controller";
 
 
 const actionTabContainer = {
@@ -14,9 +15,15 @@ export default class MenuController {
   constructor(container) {
     this._container = container.querySelector(`h2:first-child`);
     this._menuComponenet = new MenuComponent();
+    this._mainController = new MainController();
+    this._tripEventStore = this._mainController.getTripEventStore();
 
     this._onMenuTabChange = this._onMenuTabChange.bind(this);
     this._menuComponenet.setMenuTabChangeHandler(this._onMenuTabChange);
+
+    this._onSetToDefaultView = this._onSetToDefaultView.bind(this);
+    this._mainController.setCreateNewEventHandler(this._onSetToDefaultView);
+    this._tripEventStore.setFilterTypeChangeHandler(this._onSetToDefaultView);
   }
 
   render() {
@@ -42,6 +49,11 @@ export default class MenuController {
 
   _onMenuTabChange() {
     this._reset(this._menuComponenet.getCurrentMenuTab());
+    this.showTab();
+  }
+
+  _onSetToDefaultView() {
+    this._reset(MenuTab.TABLE);
     this.showTab();
   }
 }

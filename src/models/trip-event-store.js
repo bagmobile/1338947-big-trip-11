@@ -21,6 +21,8 @@ export default class TripEventStore extends AbstractStore {
       this._refreshTripEventHandlers = new Map();
       this._filterTypeChangeHandlers = [];
       this._sortTypeChangeHandlers = [];
+      this._errorDataChangeHandlers = [];
+      this._successDataChangeHandlers = [];
     }
 
     return TripEventStore.instance;
@@ -48,25 +50,34 @@ export default class TripEventStore extends AbstractStore {
   createTripEvent(newTripEvent) {
     this._api.createTripEvent(newTripEvent).then((tripEvent) => {
       this._tripEvents.set(tripEvent.id, tripEvent);
+      this._callHandlers(this._successDataChangeHandlers);
       this._callHandlers(this._dataChangeHandlers);
+    }).catch(() => {
+      this._callHandlers(this._errorDataChangeHandlers);
     });
   }
 
   updateTripEvent(id, newTripEvent, isForced = false) {
     this._api.updateTripEvent(id, newTripEvent).then((tripEvent) => {
       this._tripEvents.set(tripEvent.id, tripEvent);
+      this._callHandlers(this._successDataChangeHandlers, isForced);
       if (isForced) {
         this._callRefreshTripEventHandler(tripEvent);
         return;
       }
       this._callHandlers(this._dataChangeHandlers, tripEvent);
+    }).catch(() => {
+      this._callHandlers(this._errorDataChangeHandlers, isForced);
     });
   }
 
   deleteTripEvent(id) {
     this._api.deleteTripEvent(id).then(() => {
       this._tripEvents.delete(id);
+      this._callHandlers(this._successDataChangeHandlers);
       this._callHandlers(this._dataChangeHandlers);
+    }).catch(() => {
+      this._callHandlers(this._errorDataChangeHandlers);
     });
   }
 
@@ -191,12 +202,28 @@ export default class TripEventStore extends AbstractStore {
     this._dataChangeHandlers.push(handler);
   }
 
+  setErrorDataChangeHandler(handler) {
+    this._errorDataChangeHandlers.push(handler);
+  }
+
+  setSuccessDataChangeHandler(handler) {
+    this._successDataChangeHandlers.push(handler);
+  }
+
+  removeSuccessDataChangeHandler() {
+    this._successDataChangeHandlers = [];
+  }
+
+  removeErrorDataChangeHandler() {
+    this._errorDataChangeHandlers = [];
+  }
+
   setRefreshTripEventHandler(key, handler) {
     this._refreshTripEventHandlers.set(key, handler);
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
+  _callHandlers(handlers, ...arg) {
+    handlers.forEach((handler) => handler(...arg));
   }
 
   _callRefreshTripEventHandler(tripEvent) {

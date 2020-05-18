@@ -31,6 +31,13 @@ export const DayListType = {
   GROUPED: `grouped`,
 };
 
+export const TripEventOperation = {
+  SAVE: `Save`,
+  DELETE: `Delete`
+};
+
+export const waitButtonsMap = new Map([[TripEventOperation.SAVE, `Saving...`], [TripEventOperation.DELETE, `Deleting...`]]);
+
 export const getTripEventTypes = () => {
   return [...tripEventTypes.values()];
 };
