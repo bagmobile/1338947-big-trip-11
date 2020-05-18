@@ -15,6 +15,7 @@ import {EventErrorComponent} from "./event-error-component";
 import EventDestinationStore from "../models/event-destination-store";
 import EventOfferStore from "../models/event-offer-store";
 import AbstractComponent from "./abstract-component";
+import TripEventStore from "../models/trip-event-store";
 
 const createEditEventTemplate = (tripEvent, isNew) => {
   const {price} = tripEvent;
@@ -56,7 +57,9 @@ export class TripEditEventComponent extends AbstractComponent {
     this._startTimeFlatpickr = null;
     this._endTimeFlatpickr = null;
     this._isFavoriteCurrent = this._tripEvent.isFavorite;
+    this._favoriteBtnClickHandler = null;
 
+    this._tripEventStore = new TripEventStore();
     this._eventOfferStore = new EventOfferStore();
     this._eventDestinationStore = new EventDestinationStore();
 
@@ -144,6 +147,7 @@ export class TripEditEventComponent extends AbstractComponent {
   setFavoriteBtnClickHandler(handler) {
     this._favoriteBtnComponent.getElement().addEventListener(`click`, () => {
       this._isFavoriteCurrent = !this._tripEvent.isFavorite;
+      this._favoriteBtnClickHandler = handler;
       handler(this._isFavoriteCurrent);
     });
   }
@@ -160,6 +164,16 @@ export class TripEditEventComponent extends AbstractComponent {
 
     this._eventDestinationNameComponent.setEventDestinationNameChangeHandler((currentName) => {
       this._refreshEventDestination(currentName);
+    });
+
+    this._tripEventStore.setErrorDataChangeHandler((isForced) => {
+      if (isForced) {
+        remove(this._favoriteBtnComponent);
+        this._tripEvent.isFavorite = !this._tripEvent.isFavorite;
+        this._favoriteBtnComponent = new FavoriteBtnComponent(this._tripEvent.isFavorite);
+        render(this._element.querySelector(`.event__rollup-btn`), this._favoriteBtnComponent, RenderPosition.BEFOREBEGIN);
+        this.setFavoriteBtnClickHandler(this._favoriteBtnClickHandler);
+      }
     });
   }
 

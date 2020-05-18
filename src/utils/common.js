@@ -2,6 +2,7 @@ import moment from "moment";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
+import {waitButtonsMap} from "../config";
 
 export const KeyButton = {
   ESC_KEY: `Escape`,
@@ -65,4 +66,49 @@ export const isEscEvent = function (evt, onKeyDown) {
   if (evt.key === KeyButton.ESC_KEY) {
     onKeyDown(evt);
   }
+};
+
+export const lockFormTrigger = (form) => {
+  form.querySelectorAll(`input, select, button`).forEach((element) => {
+    if (!element.hasAttribute(`disabled`)) {
+      element.setAttribute(`disabled`, true);
+    } else {
+      element.removeAttribute(`disabled`);
+    }
+  });
+};
+
+export const setButtonsWaitingTrigger = (form, tripEventOperation) => {
+
+  form.querySelectorAll(`button`).forEach((element) => {
+    const value = element.innerText;
+    if (waitButtonsMap.has(value) && (value === tripEventOperation)) {
+      element.innerText = waitButtonsMap.get(value);
+    }
+    if (!waitButtonsMap.has(value)) {
+      waitButtonsMap.forEach((item, index) => {
+        if (item === value) {
+          element.innerText = index;
+        }
+      });
+    }
+  });
+};
+
+export const setErrorStyleForm = (form, isError) => {
+  const ERROR_CLASS_FORM = `error-form`;
+  if (isError) {
+
+    form.classList.add(ERROR_CLASS_FORM);
+  } else {
+    form.classList.remove(ERROR_CLASS_FORM);
+  }
+};
+
+export const shake = (element) => {
+  const SHAKE_ANIMATION_TIMEOUT = 600;
+  element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+  setTimeout(() => {
+    element.style.animation = ``;
+  }, SHAKE_ANIMATION_TIMEOUT);
 };
