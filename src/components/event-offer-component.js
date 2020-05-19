@@ -1,11 +1,6 @@
-import {MAX_COUNT_OFFER_SHOW} from "../config";
+import {MAX_COUNT_OFFER_SHOW, OfferListType} from "../config";
 import AbstractComponent from "./abstract-component";
-
-export const OfferListType = {
-  SHORT_TEXT_LIST: `shortTextList`,
-  CHECKED_OPTION_LIST: `checkedOptionList`,
-  AVAILABLE_OPTION_LIST: `availableOptionList`,
-};
+import EventOfferStore from "../models/event-offer-store";
 
 const createItemTemplate = (offer) => {
   const {title, price} = offer;
@@ -63,25 +58,17 @@ const createAvailableOffersListTemplate = (offers) => {
 </section>`);
 };
 
-const createErrorTemplate = () => {
-  return (`<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    Error! View offer list is not available now!
-</section>`);
-};
-
 export class EventOfferComponent extends AbstractComponent {
 
-  constructor(tripEvent, eventOfferStore, offerListType, newEventType) {
+  constructor(tripEvent, offerListType, newEventType) {
     super();
     this._tripEvent = tripEvent;
-    this._eventOfferStore = eventOfferStore;
+    this._eventOfferStore = new EventOfferStore();
     this._offerListType = offerListType;
     this._newEventType = newEventType;
   }
 
   getTemplate() {
-    let template = ``;
 
     switch (this._offerListType) {
       case OfferListType.SHORT_TEXT_LIST:
@@ -89,13 +76,12 @@ export class EventOfferComponent extends AbstractComponent {
         return createShortOffersListTemplate(shortListOffers);
       case OfferListType.CHECKED_OPTION_LIST:
         const selectedOffers = this._eventOfferStore.getSelectedOffers(this._tripEvent.type, this._tripEvent.offers);
-        template = createSelectedOffersListTemplate(selectedOffers);
-        break;
+        return createSelectedOffersListTemplate(selectedOffers);
       case OfferListType.AVAILABLE_OPTION_LIST:
         const availableOffers = this._eventOfferStore.getSelectedOffers(this._newEventType, []);
-        template = createAvailableOffersListTemplate(availableOffers, this._newEventType);
+        return createAvailableOffersListTemplate(availableOffers, this._newEventType);
     }
-    return this._eventOfferStore.hasErrors() ? createErrorTemplate() : template;
+    return ``;
   }
 
 }

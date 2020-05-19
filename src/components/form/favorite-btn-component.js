@@ -1,7 +1,7 @@
 import {createHTMLCollection} from "../../utils/render";
 import AbstractComponent from "../abstract-component";
 
-const createFavoriteButtonTemplate = (isChecked) => {
+const createFavoriteBtnTemplate = (isChecked) => {
   const checked = isChecked ? `checked` : ``;
 
   return (`<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${checked}>
@@ -21,7 +21,7 @@ export class FavoriteBtnComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createFavoriteButtonTemplate(this._isChecked);
+    return createFavoriteBtnTemplate(this._isChecked);
   }
 
   getElement() {

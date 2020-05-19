@@ -10,7 +10,7 @@ export default class FilterController {
     this._contanier = container;
     this._mainController = new MainController();
     this._tripEventStore = this._mainController.getTripEventStore();
-    this._filterComponent = new FilterComponent(this._tripEventStore);
+    this._filterComponent = new FilterComponent();
 
     this._onFilterTypeChange = this._onFilterTypeChange.bind(this);
     this._filterComponent.setFilterTypeChangeHandler(this._onFilterTypeChange);
@@ -32,7 +32,7 @@ export default class FilterController {
 
   _reset(currentFilterType) {
     remove(this._filterComponent);
-    this._filterComponent = new FilterComponent(this._tripEventStore, currentFilterType);
+    this._filterComponent = new FilterComponent(currentFilterType);
     this._filterComponent.setFilterTypeChangeHandler(this._onFilterTypeChange);
     this.render();
   }

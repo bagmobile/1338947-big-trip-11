@@ -6,7 +6,6 @@ const createNewEventButtonTemplate = () => {
 
 export class NewEventBtnComponent extends AbstractComponent {
 
-
   getTemplate() {
     return createNewEventButtonTemplate();
   }

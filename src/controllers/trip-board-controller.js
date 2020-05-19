@@ -4,6 +4,8 @@ import {DayListComponent} from "../components/day-list-component";
 import {TripNoEventComponent} from "../components/trip-no-event-component";
 import MainController from "./main-controller";
 import SortController from "./sort-controller";
+import TripErrorComponent from "../components/trip-error-component";
+import {TripEventErrorType} from "../config";
 
 export default class TripBoardController {
 
@@ -30,6 +32,10 @@ export default class TripBoardController {
   }
 
   render() {
+    if (this._tripEventStore.hasErrors()) {
+      render(this._container, new TripErrorComponent(TripEventErrorType.EVENT), RenderPosition.AFTERBEGIN);
+      return;
+    }
     this._resetTripNoEvent();
     this._renderTripEventsList();
   }
@@ -43,7 +49,7 @@ export default class TripBoardController {
 
   _renderTripEventsList() {
     const dayListType = DayListComponent.getType(this._mainController.getController(SortController.name).getComponent().getCurrentSortType());
-    this._dayListComponent = new DayListComponent(this._tripEventStore, dayListType);
+    this._dayListComponent = new DayListComponent(dayListType);
     render(this._container, this._dayListComponent, RenderPosition.BEFOREEND);
 
     this._renderTripEvents();

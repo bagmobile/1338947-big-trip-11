@@ -46,7 +46,7 @@ export default class TripEventModel {
 
     return new TripEventModel({
       id: null,
-      type: config.getDefaultTripEventType(),
+      type: config.DEFAULT_TRIP_EVENT_TYPE,
       startDateTime: moment(new Date()).toISOString(true),
       endDateTime: moment(new Date()).toISOString(true),
       price: 0,

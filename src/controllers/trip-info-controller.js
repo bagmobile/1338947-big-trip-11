@@ -7,7 +7,7 @@ export default class TripInfoController {
   constructor(container) {
     this._container = container;
     this._tripEventStore = new MainController().getTripEventStore();
-    this._tripInfoComponent = new TripInfoComponent(this._tripEventStore);
+    this._tripInfoComponent = new TripInfoComponent();
 
     this._onRefreshTripInfo = this._onRefreshTripInfo.bind(this);
     this._tripEventStore.setFilterTypeChangeHandler(this._onRefreshTripInfo);

@@ -1,13 +1,13 @@
 import {FilterType} from "../config";
 import AbstractComponent from "./abstract-component";
+import TripEventStore from "../models/trip-event-store";
 
 const createFilterElement = (filter, isChecked, isHidden) => {
   const checked = isChecked ? `checked` : ``;
   const hidden = isHidden ? `` : `visually-hidden`;
 
   return (`<div class="trip-filters__filter">
-    <input
-            id="filter-${filter}"
+    <input id="filter-${filter}"
             class="trip-filters__filter-input  visually-hidden"
             type="radio"
             name="trip-filter"
@@ -29,9 +29,9 @@ const createFilterTemplate = (filters, filterType, options) => {
 
 export class FilterComponent extends AbstractComponent {
 
-  constructor(tripEventStore, filterType = FilterType.EVERYTHING) {
+  constructor(filterType = FilterType.EVERYTHING) {
     super();
-    this._tripEventStore = tripEventStore;
+    this._tripEventStore = new TripEventStore();
     this._currenFilterType = filterType;
   }
 

@@ -3,8 +3,8 @@ import {TripStatsComponent} from "../components/trip-stats-component";
 import MainController from "./main-controller";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getTripEventTypes, getTripEventTypesList, STATS_BAR_HEIGHT} from "../config";
-import {formatDuration, getDuration} from "../utils/common";
+import {STATS_BAR_HEIGHT} from "../config";
+import {formatDuration, getDuration, getTripEventTypes, getTripEventTypesList} from "../utils/common";
 import moment from "moment";
 
 export default class TripStatsController {
@@ -94,6 +94,7 @@ export default class TripStatsController {
     const axisY = chart.scales[`y-axis-0`];
     const ticks = axisY.ticks;
     const fontSize = axisY.options.ticks.fontSize;
+
     if (axisY.getPixelForTick(ticks.length - 1)) {
       ticks.forEach((tick, idx) => {
 

@@ -2,7 +2,7 @@ import {remove, render, RenderPosition} from "../utils/render";
 import TripEventModel from "../models/trip-event-model";
 import TripEventStore from "../models/trip-event-store";
 import {TripEditEventComponent} from "../components/trip-edit-event-component";
-import {isEscEvent, lockFormTrigger, setButtonsWaitingTrigger, setErrorStyleForm, shake} from "../utils/common";
+import {lockFormTrigger, onEscEvent, setButtonsWaitingTrigger, shake, toggleFormErrorStyle} from "../utils/common";
 import {TripEventOperation} from "../config";
 
 export const ModeEditEvent = {
@@ -61,7 +61,7 @@ export default class TripEditEventController {
     this._editEventComponent.setSubmitHandler((mode) => {
       const tripEvent = this._editEventComponent.getData();
       this._updateFormTrigger(this._editEventComponent.getElement(), TripEventOperation.SAVE);
-      setErrorStyleForm(this._editEventComponent.getElement(), false);
+      toggleFormErrorStyle(this._editEventComponent.getElement(), false);
 
       switch (mode) {
         case ModeEditEvent.NEW:
@@ -75,7 +75,7 @@ export default class TripEditEventController {
 
     this._editEventComponent.setDeleteBtnClickHandler(() => {
       this._updateFormTrigger(this._editEventComponent.getElement(), TripEventOperation.DELETE);
-      setErrorStyleForm(this._editEventComponent.getElement(), false);
+      toggleFormErrorStyle(this._editEventComponent.getElement(), false);
       this._tripEventStore.deleteTripEvent(this._tripEvent.id);
     });
 
@@ -89,7 +89,7 @@ export default class TripEditEventController {
 
     this._editEventComponent.setFavoriteBtnClickHandler((isFavoriteCurrent) => {
       const updatedTripEvent = Object.assign({}, this._tripEvent, {isFavorite: isFavoriteCurrent});
-      setErrorStyleForm(this._editEventComponent.getElement(), false);
+      toggleFormErrorStyle(this._editEventComponent.getElement(), false);
       this._tripEvent.isFavorite = isFavoriteCurrent;
       this._tripEventStore.updateTripEvent(this._tripEvent.id, new TripEventModel(updatedTripEvent), true);
     });
@@ -107,7 +107,7 @@ export default class TripEditEventController {
   }
 
   _onEscKeyDown(evt) {
-    isEscEvent(evt, () => {
+    onEscEvent(evt, () => {
       this._close();
     });
   }
@@ -116,7 +116,7 @@ export default class TripEditEventController {
     if (!isForced) {
       this._updateFormTrigger(this._editEventComponent.getElement());
     }
-    setErrorStyleForm(this._editEventComponent.getElement(), true);
+    toggleFormErrorStyle(this._editEventComponent.getElement(), true);
     shake(this._editEventComponent.getElement());
   }
 

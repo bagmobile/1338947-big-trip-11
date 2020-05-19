@@ -35,7 +35,6 @@ export class MenuComponent extends AbstractComponent {
         handler();
       }
     });
-
   }
 
 }

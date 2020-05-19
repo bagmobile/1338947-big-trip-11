@@ -1,5 +1,6 @@
 import {DayListType, SortType} from "../config";
 import AbstractComponent from "./abstract-component";
+import TripEventStore from "../models/trip-event-store";
 
 const createDayListTemplate = (list) => {
 
@@ -53,9 +54,9 @@ const getGroupByDayListTemplate = (batchTripEvents) => {
 
 export class DayListComponent extends AbstractComponent {
 
-  constructor(tripEventStore, type) {
+  constructor(type) {
     super();
-    this._tripEventStore = tripEventStore;
+    this._tripEventStore = new TripEventStore();
     this._type = type;
   }
 

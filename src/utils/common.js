@@ -2,7 +2,7 @@ import moment from "moment";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
-import {waitButtonsMap} from "../config";
+import {tripEventTypes, waitButtonsMap} from "../config";
 
 export const KeyButton = {
   ESC_KEY: `Escape`,
@@ -45,7 +45,7 @@ export const formatDatePeriod = (startDateTime, endDateTime) => {
   ].join(` - `);
 };
 
-export const getFlatpickr = (dateTime, element) => {
+export const getFlatpickr = (dateTime, element, callback) => {
   // noinspection JSValidateTypes
   return flatpickr(element, {
     dateFormat: `d/m/y H:i`,
@@ -54,7 +54,9 @@ export const getFlatpickr = (dateTime, element) => {
     minuteIncrement: 1,
     allowInput: true,
     defaultDate: dateTime || new Date(),
-
+    onChange: () => {
+      callback();
+    }
   });
 };
 
@@ -62,7 +64,7 @@ export const upperFirstChar = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const isEscEvent = function (evt, onKeyDown) {
+export const onEscEvent = (evt, onKeyDown) => {
   if (evt.key === KeyButton.ESC_KEY) {
     onKeyDown(evt);
   }
@@ -82,10 +84,11 @@ export const setButtonsWaitingTrigger = (form, tripEventOperation) => {
 
   form.querySelectorAll(`button`).forEach((element) => {
     const value = element.innerText;
-    if (waitButtonsMap.has(value) && (value === tripEventOperation)) {
-      element.innerText = waitButtonsMap.get(value);
-    }
-    if (!waitButtonsMap.has(value)) {
+    if (waitButtonsMap.has(value)) {
+      if ((value === tripEventOperation)) {
+        element.innerText = waitButtonsMap.get(value);
+      }
+    } else {
       waitButtonsMap.forEach((item, index) => {
         if (item === value) {
           element.innerText = index;
@@ -95,10 +98,9 @@ export const setButtonsWaitingTrigger = (form, tripEventOperation) => {
   });
 };
 
-export const setErrorStyleForm = (form, isError) => {
+export const toggleFormErrorStyle = (form, isError) => {
   const ERROR_CLASS_FORM = `error-form`;
   if (isError) {
-
     form.classList.add(ERROR_CLASS_FORM);
   } else {
     form.classList.remove(ERROR_CLASS_FORM);
@@ -111,4 +113,19 @@ export const shake = (element) => {
   setTimeout(() => {
     element.style.animation = ``;
   }, SHAKE_ANIMATION_TIMEOUT);
+};
+
+export const getTripEventTypes = () => {
+  return [...tripEventTypes.values()];
+};
+
+export const getTripEventTypesList = () => {
+  return getTripEventTypes().reduce((acc, item) => {
+    acc.push(...item);
+    return acc;
+  }, []);
+};
+
+export const getDefaultTripEventType = () => {
+  return getTripEventTypes()[0][0];
 };

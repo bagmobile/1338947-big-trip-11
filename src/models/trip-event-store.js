@@ -52,9 +52,7 @@ export default class TripEventStore extends AbstractStore {
       this._tripEvents.set(tripEvent.id, tripEvent);
       this._callHandlers(this._successDataChangeHandlers);
       this._callHandlers(this._dataChangeHandlers);
-    }).catch(() => {
-      this._callHandlers(this._errorDataChangeHandlers);
-    });
+    }).catch(() => this._callHandlers(this._errorDataChangeHandlers));
   }
 
   updateTripEvent(id, newTripEvent, isForced = false) {
@@ -66,9 +64,7 @@ export default class TripEventStore extends AbstractStore {
         return;
       }
       this._callHandlers(this._dataChangeHandlers, tripEvent);
-    }).catch(() => {
-      this._callHandlers(this._errorDataChangeHandlers, isForced);
-    });
+    }).catch(() => this._callHandlers(this._errorDataChangeHandlers, isForced));
   }
 
   deleteTripEvent(id) {
@@ -76,9 +72,7 @@ export default class TripEventStore extends AbstractStore {
       this._tripEvents.delete(id);
       this._callHandlers(this._successDataChangeHandlers);
       this._callHandlers(this._dataChangeHandlers);
-    }).catch(() => {
-      this._callHandlers(this._errorDataChangeHandlers);
-    });
+    }).catch(() => this._callHandlers(this._errorDataChangeHandlers));
   }
 
   getTripEventsGroupByDays() {

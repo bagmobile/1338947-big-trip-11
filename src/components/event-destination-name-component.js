@@ -1,4 +1,5 @@
 import AbstractComponent from "./abstract-component";
+import EventDestinationStore from "../models/event-destination-store";
 
 const createNameItemTemplate = (name) => {
   return (`<option value="${name}"></option>`);
@@ -7,7 +8,7 @@ const createNameItemTemplate = (name) => {
 const createNamesListTemplate = (tripEvent, names) => {
   const {type, destination} = tripEvent;
   const route = `${tripEvent.getRoute(type)}`;
-  const nameList = names.map((name) => createNameItemTemplate(name));
+  const namesList = names.map((name) => createNameItemTemplate(name));
 
   return (`<div class="event__field-group  event__field-group--destination">
                         <label class="event__label  event__type-output" for="event-destination-1">
@@ -15,18 +16,18 @@ const createNamesListTemplate = (tripEvent, names) => {
                         </label>
                         <input class="event__input  event__input--destination" id="event-destination-1" type="text" required name="event-destination" value="${destination.name}" list="destination-list-1" autocomplete="off">
                         <datalist id="destination-list-1">
-                          ${nameList}
+                          ${namesList}
                         </datalist>
                       </div>`);
 };
 
 export class EventDestinationNameComponent extends AbstractComponent {
 
-  constructor(tripEvent, eventDestinationStore) {
+  constructor(tripEvent) {
     super();
     this._tripEvent = tripEvent;
-    this._eventDestinationStore = eventDestinationStore;
-    this._names = eventDestinationStore.getNames();
+    this._eventDestinationStore = new EventDestinationStore();
+    this._names = this._eventDestinationStore.getNames();
     this._eventDestinationNameChangeHandler = null;
   }
 

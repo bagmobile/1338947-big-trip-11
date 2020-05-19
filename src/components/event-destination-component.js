@@ -1,4 +1,5 @@
 import AbstractComponent from "./abstract-component";
+import EventDestinationStore from "../models/event-destination-store";
 
 const createPictureItemTemplate = (picture) => {
   const {src, description} = picture;
@@ -27,9 +28,10 @@ const createEventDestinationTemplate = (destination) => {
 
 export class EventDestinationComponent extends AbstractComponent {
 
-  constructor(tripDestinationsModel, destination, currentName = null) {
+  constructor(destination, currentName = null) {
     super();
-    this._destination = !currentName ? destination : tripDestinationsModel.getDestination(currentName);
+    this._eventDestinationStore = new EventDestinationStore();
+    this._destination = !currentName ? destination : this._eventDestinationStore.getDestination(currentName);
   }
 
   getTemplate() {

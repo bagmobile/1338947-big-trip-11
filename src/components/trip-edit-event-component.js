@@ -1,6 +1,6 @@
 import {createElement, remove, render, RenderPosition} from "../utils/render";
 import {EventDestinationComponent} from "./event-destination-component";
-import {EventOfferComponent, OfferListType} from "./event-offer-component";
+import {EventOfferComponent} from "./event-offer-component";
 import {ModeEditEvent} from "../controllers/trip-edit-event-controller";
 import {formatToDefault, getFlatpickr} from "../utils/common";
 import {EventDetailsComponent} from "./event-details-component";
@@ -11,11 +11,12 @@ import {FavoriteBtnComponent} from "./form/favorite-btn-component";
 import {RollupBtnComponent} from "./form/rollup-btn-component";
 import {EventDestinationNameComponent} from "./event-destination-name-component";
 import {EventTypeComponent} from "./event-type-component";
-import {EventErrorComponent} from "./event-error-component";
 import EventDestinationStore from "../models/event-destination-store";
 import EventOfferStore from "../models/event-offer-store";
 import AbstractComponent from "./abstract-component";
 import TripEventStore from "../models/trip-event-store";
+import TripErrorComponent from "./trip-error-component";
+import {OfferListType, TripEventErrorType} from "../config";
 
 const createEditEventTemplate = (tripEvent, isNew) => {
   const {price} = tripEvent;
@@ -63,17 +64,16 @@ export class TripEditEventComponent extends AbstractComponent {
     this._eventOfferStore = new EventOfferStore();
     this._eventDestinationStore = new EventDestinationStore();
 
-    this._eventErrorComponent = new EventErrorComponent();
     this._eventTypeComponent = new EventTypeComponent(this._tripEvent);
-    this._eventDestinationNameComponent = new EventDestinationNameComponent(this._tripEvent, this._eventDestinationStore);
+    this._eventDestinationNameComponent = new EventDestinationNameComponent(this._tripEvent);
     this._rollupBtnComponent = new RollupBtnComponent();
     this._favoriteBtnComponent = new FavoriteBtnComponent(this._tripEvent.isFavorite);
     this._deleteBtnComponent = new DeleteBtnComponent();
     this._cancelBtnComponent = new CancelBtnComponent();
     this._saveBtnComponent = new SaveBtnComponent();
     this._eventDetailsComponent = new EventDetailsComponent();
-    this._eventOfferComponent = new EventOfferComponent(this._tripEvent, this._eventOfferStore, OfferListType.CHECKED_OPTION_LIST);
-    this._eventDestinationComponent = new EventDestinationComponent(this._eventDestinationStore, this._tripEvent.destination);
+    this._eventOfferComponent = new EventOfferComponent(this._tripEvent, OfferListType.CHECKED_OPTION_LIST);
+    this._eventDestinationComponent = new EventDestinationComponent(this._tripEvent.destination);
 
     this._validatePeriod = this._validatePeriod.bind(this);
     this._applyFlatpickr();
@@ -99,10 +99,9 @@ export class TripEditEventComponent extends AbstractComponent {
       render(this._element.querySelector(`.event__header`), this._eventDetailsComponent, RenderPosition.AFTEREND);
       render(this._element.querySelector(`.event__details`), this._eventOfferComponent, RenderPosition.AFTERBEGIN);
       render(this._element.querySelector(`.event__details`), this._eventDestinationComponent, RenderPosition.BEFOREEND);
-      render(this._element, this._eventErrorComponent, RenderPosition.AFTERBEGIN);
 
       this._initViewMode(this._tripEvent.offers);
-      this._setupViewEventDetails(this._eventOfferStore.hasOffers(this._tripEvent.type) || this._eventOfferStore.hasErrors(), false);
+      this._setupViewEventDetails(this._eventOfferStore.hasOffers(this._tripEvent.type), false);
     }
 
     return this._element;
@@ -124,9 +123,7 @@ export class TripEditEventComponent extends AbstractComponent {
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      if (this._validatePeriod()) {
-        handler(this._mode);
-      }
+      handler(this._mode);
     });
   }
 
@@ -180,22 +177,15 @@ export class TripEditEventComponent extends AbstractComponent {
   _validatePeriod() {
     const startDateTime = formatToDefault(this._startTimeFlatpickr.input.value);
     const endDateTime = formatToDefault(this._endTimeFlatpickr.input.value);
-
     this._startTimeFlatpickr.input.setCustomValidity(``);
     if (new Date(startDateTime) > new Date(endDateTime)) {
       this._startTimeFlatpickr.input.setCustomValidity(`The date for beginning cannot be less than ending date`);
-      return false;
     }
-    return true;
   }
 
   _getSelectedOffers(type) {
     const checkedOfferElements = this.getElement().querySelectorAll(`input.event__offer-checkbox:checked`);
     const availableOffers = this._eventOfferStore.getOffersForType(type);
-
-    if (this._eventOfferStore.hasErrors()) {
-      return this._tripEvent.offers;
-    }
 
     return Array.from(checkedOfferElements)
       .map((input) => {
@@ -212,8 +202,8 @@ export class TripEditEventComponent extends AbstractComponent {
         flatpickrTime = null;
       }
     });
-    this._startTimeFlatpickr = getFlatpickr(new Date(this._tripEvent.startDateTime), this.getElement().querySelector(`#event-start-time-1`), this._validatePeriod);
-    this._endTimeFlatpickr = getFlatpickr(new Date(this._tripEvent.endDateTime), this.getElement().querySelector(`#event-end-time-1`), this._validatePeriod);
+    this._startTimeFlatpickr = getFlatpickr(new Date(this._tripEvent.startDateTime), this.getElement().querySelector(`#event-start-time-1`), this._validatePeriod.bind(this));
+    this._endTimeFlatpickr = getFlatpickr(new Date(this._tripEvent.endDateTime), this.getElement().querySelector(`#event-end-time-1`), this._validatePeriod.bind(this));
   }
 
   _initViewMode() {
@@ -221,10 +211,6 @@ export class TripEditEventComponent extends AbstractComponent {
     this._eventDetailsComponent.hide();
     this._eventOfferComponent.hide();
     this._eventDestinationComponent.hide();
-
-    if (this._eventDestinationStore.hasErrors()) {
-      this._eventErrorComponent.show();
-    }
 
     switch (this._mode) {
       case ModeEditEvent.NEW:
@@ -246,18 +232,26 @@ export class TripEditEventComponent extends AbstractComponent {
       this._eventDetailsComponent.show();
       this._eventDestinationComponent.show();
     }
+
+    if (this._eventDestinationStore.hasErrors()) {
+      render(this._element, new TripErrorComponent(TripEventErrorType.DESTINATION), RenderPosition.AFTERBEGIN);
+    }
+
+    if (this._eventOfferStore.hasErrors()) {
+      render(this._element, new TripErrorComponent(TripEventErrorType.OFFER), RenderPosition.AFTERBEGIN);
+    }
   }
 
   _refreshEventOffer(currentEventType) {
     remove(this._eventOfferComponent);
-    this._eventOfferComponent = new EventOfferComponent(this._tripEvent, this._eventOfferStore, OfferListType.AVAILABLE_OPTION_LIST, currentEventType);
+    this._eventOfferComponent = new EventOfferComponent(this._tripEvent, OfferListType.AVAILABLE_OPTION_LIST, currentEventType);
     render(this._element.querySelector(`.event__details`), this._eventOfferComponent, RenderPosition.AFTERBEGIN);
-    this._setupViewEventDetails(this._eventOfferStore.hasOffers(currentEventType) || this._eventOfferStore.hasErrors(), false);
+    this._setupViewEventDetails(this._eventOfferStore.hasOffers(currentEventType), false);
   }
 
   _refreshEventDestination(currentName) {
     remove(this._eventDestinationComponent);
-    this._eventDestinationComponent = new EventDestinationComponent(this._eventDestinationStore, this._tripEvent.destination, currentName);
+    this._eventDestinationComponent = new EventDestinationComponent(this._tripEvent.destination, currentName);
     render(this._element.querySelector(`.event__details`), this._eventDestinationComponent, RenderPosition.BEFOREEND);
     this._setupViewEventDetails(false, this._eventDestinationStore.hasDescription(currentName));
   }

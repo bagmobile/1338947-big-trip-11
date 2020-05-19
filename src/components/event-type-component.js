@@ -1,6 +1,5 @@
 import AbstractComponent from "./abstract-component";
-import {getTripEventTypes} from "../config";
-import {upperFirstChar} from "../utils/common";
+import {getTripEventTypes, upperFirstChar} from "../utils/common";
 
 const createEventTypeItemTemplate = (name, isChecked) => {
   const lowerName = upperFirstChar(name);
