@@ -12,15 +12,6 @@ export default class EventOfferStore extends AbstractStore {
     return EventOfferStore.instance;
   }
 
-  static parse(offers) {
-    return offers.map((offer) => {
-      return new EventOfferModel({
-        type: offer[`type`],
-        offers: offer[`offers`],
-      });
-    });
-  }
-
   setOffers(offers) {
     this._offers = offers;
   }
@@ -47,6 +38,15 @@ export default class EventOfferStore extends AbstractStore {
         }),
         data: offersForType[index],
       };
+    });
+  }
+
+  static parse(offers) {
+    return offers.map((offer) => {
+      return new EventOfferModel({
+        type: offer[`type`],
+        offers: offer[`offers`],
+      });
     });
   }
 

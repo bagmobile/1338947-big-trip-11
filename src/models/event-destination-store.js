@@ -12,14 +12,6 @@ export default class EventDestinationStore extends AbstractStore {
     return EventDestinationStore.instance;
   }
 
-  static parse(destinations) {
-    return destinations.map((destination) => new EventDestinationModel({
-      name: destination[`name`],
-      description: destination[`description`],
-      pictures: destination[`pictures`],
-    }));
-  }
-
   setDestinations(destinations) {
     this._destinations = destinations;
   }
@@ -40,6 +32,14 @@ export default class EventDestinationStore extends AbstractStore {
       names.add(destination.name);
     });
     return [...names];
+  }
+
+  static parse(destinations) {
+    return destinations.map((destination) => new EventDestinationModel({
+      name: destination[`name`],
+      description: destination[`description`],
+      pictures: destination[`pictures`],
+    }));
   }
 
 }

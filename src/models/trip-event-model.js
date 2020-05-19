@@ -15,6 +15,23 @@ export default class TripEventModel {
     this.isFavorite = data.isFavorite;
   }
 
+  getTitle() {
+    return `${this.getRoute(this.type)} ${this.destination.name}`;
+  }
+
+  getRoutePrefix(type) {
+    for (const [key, value] of config.tripEventTypes) {
+      if (value.includes(type)) {
+        return key;
+      }
+    }
+    return ``;
+  }
+
+  getRoute(type) {
+    return `${upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
+  }
+
   static parse(tripEvent) {
 
     return new TripEventModel({
@@ -58,23 +75,6 @@ export default class TripEventModel {
       },
       isFavorite: false,
     });
-  }
-
-  getTitle() {
-    return `${this.getRoute(this.type)} ${this.destination.name}`;
-  }
-
-  getRoutePrefix(type) {
-    for (const [key, value] of config.tripEventTypes) {
-      if (value.includes(type)) {
-        return key;
-      }
-    }
-    return ``;
-  }
-
-  getRoute(type) {
-    return `${upperFirstChar(type)} ${this.getRoutePrefix(type)}`;
   }
 
 }

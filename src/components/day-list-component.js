@@ -60,16 +60,6 @@ export class DayListComponent extends AbstractComponent {
     this._type = type;
   }
 
-  static getType(sortType) {
-    const sortTypeToDayListTypeMap = new Map([
-      [SortType.EVENT, DayListType.GROUPED],
-      [SortType.TIME, DayListType.ORDERED],
-      [SortType.PRICE, DayListType.ORDERED],
-    ]);
-
-    return sortTypeToDayListTypeMap.get(sortType);
-  }
-
   getTemplate() {
     switch (this._type) {
       case DayListType.ORDERED:
@@ -83,6 +73,16 @@ export class DayListComponent extends AbstractComponent {
 
   getEventItemElements() {
     return this.getElement().querySelectorAll(`.trip-events__item`);
+  }
+
+  static getType(sortType) {
+    const sortTypeToDayListTypeMap = new Map([
+      [SortType.EVENT, DayListType.GROUPED],
+      [SortType.TIME, DayListType.ORDERED],
+      [SortType.PRICE, DayListType.ORDERED],
+    ]);
+
+    return sortTypeToDayListTypeMap.get(sortType);
   }
 
 }

@@ -47,6 +47,13 @@ export default class TripEditEventController {
     render(container, this._editEventComponent, RenderPosition.AFTEREND);
   }
 
+  destroyComponent() {
+    remove(this._editEventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._tripEventStore.removeErrorDataChangeHandler();
+    this._tripEventStore.removeSuccessDataChangeHandler();
+  }
+
   setCloseEditEventHandler(handler) {
     this._closeEditEventHandelrs.push(handler);
   }
@@ -93,13 +100,6 @@ export default class TripEditEventController {
       this._tripEvent.isFavorite = isFavoriteCurrent;
       this._tripEventStore.updateTripEvent(this._tripEvent.id, new TripEventModel(updatedTripEvent), true);
     });
-  }
-
-  destroyComponent() {
-    remove(this._editEventComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._tripEventStore.removeErrorDataChangeHandler();
-    this._tripEventStore.removeSuccessDataChangeHandler();
   }
 
   _close() {

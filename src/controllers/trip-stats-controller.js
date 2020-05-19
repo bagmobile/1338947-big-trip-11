@@ -71,22 +71,6 @@ export default class TripStatsController {
     this._renderCharts();
   }
 
-  _renderCharts() {
-    this._resetCharts();
-    this._moneyChart = this.renderMoneyChart(this._chartMoneyElement);
-    this._transportChart = this.renderTransportChart(this._chartTransportElement);
-    this._timeSpentChart = this.renderTimeSpentChart(this._chartTimeSpentElement);
-  }
-
-  _resetCharts() {
-    [this._moneyChart, this._transportChart, this._timeSpentChart].forEach((chart) => {
-      if (chart) {
-        chart.destroy();
-        chart = null;
-      }
-    });
-  }
-
   chartAnimationCallback(animation) {
     const ICON_SIZE = 20;
     const ICON_PADDING = ICON_SIZE;
@@ -118,7 +102,6 @@ export default class TripStatsController {
       });
     }
   }
-
 
   renderMoneyChart(container) {
     const labels = this.getTripEventDataByMoney().map((item) => item.type.toUpperCase());
@@ -364,5 +347,21 @@ export default class TripStatsController {
       },
     });
 
+  }
+
+  _renderCharts() {
+    this._resetCharts();
+    this._moneyChart = this.renderMoneyChart(this._chartMoneyElement);
+    this._transportChart = this.renderTransportChart(this._chartTransportElement);
+    this._timeSpentChart = this.renderTimeSpentChart(this._chartTimeSpentElement);
+  }
+
+  _resetCharts() {
+    [this._moneyChart, this._transportChart, this._timeSpentChart].forEach((chart) => {
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+    });
   }
 }

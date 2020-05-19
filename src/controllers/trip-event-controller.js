@@ -23,18 +23,18 @@ export default class TripEventController {
     this._openTripEditHandler = handler;
   }
 
-  _onOpenTripEditEvent() {
-    if (this._openTripEditHandler) {
-      this._openTripEditHandler(this._tripEvent, ModeEditEvent.UPDATE, this._eventComponent);
-    }
-  }
-
   refreshTripEventHandler(tripEvent) {
     this._tripEvent = tripEvent;
   }
 
   render(container) {
     render(container, this._eventComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _onOpenTripEditEvent() {
+    if (this._openTripEditHandler) {
+      this._openTripEditHandler(this._tripEvent, ModeEditEvent.UPDATE, this._eventComponent);
+    }
   }
 
 }

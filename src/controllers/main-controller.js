@@ -66,6 +66,17 @@ export default class MainController {
     this._createNewEventHandlers.push(handler);
   }
 
+  closeTripEditEvent() {
+    const tripEditEventComponent = this._tripEditEventController.getComponent();
+    const tripEventSourceComponent = this._tripEditEventController.getSourceComponent();
+    if (tripEventSourceComponent) {
+      replace(tripEventSourceComponent, tripEditEventComponent);
+    }
+    this.getController(NewEventController.name).getComponent().getElement().removeAttribute(`disabled`);
+    this._tripEditEventController.destroyComponent();
+    this._tripEditEventController = null;
+  }
+
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
   }
@@ -89,17 +100,6 @@ export default class MainController {
     } else {
       this._tripEditEventController.render(tripEventsElement.querySelector(targetContainer));
     }
-  }
-
-  closeTripEditEvent() {
-    const tripEditEventComponent = this._tripEditEventController.getComponent();
-    const tripEventSourceComponent = this._tripEditEventController.getSourceComponent();
-    if (tripEventSourceComponent) {
-      replace(tripEventSourceComponent, tripEditEventComponent);
-    }
-    this.getController(NewEventController.name).getComponent().getElement().removeAttribute(`disabled`);
-    this._tripEditEventController.destroyComponent();
-    this._tripEditEventController = null;
   }
 
   _closeTripEditEventHandler() {

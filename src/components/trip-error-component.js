@@ -11,14 +11,8 @@ export default class TripErrorComponent extends AbstractComponent {
     this._type = type;
   }
 
-
   getTemplate() {
     return createTripErrorTemplate(this._type);
   }
 
-  /*  getElement() {
-      super.getElement();
-      this.hide();
-      return this._element;
-    }*/
 }

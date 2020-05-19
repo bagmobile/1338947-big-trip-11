@@ -77,7 +77,7 @@ export default class TripEventStore extends AbstractStore {
 
   getTripEventsGroupByDays() {
     const tripEvents = this.getTripEvents();
-    let uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.startDateTime)), new Set())];
+    const uniqueDays = [...tripEvents.reduce((acc, elem) => acc.add(formatShortDate(elem.startDateTime)), new Set())];
     return uniqueDays.reduce((acc, day, index) => {
       acc.push([{
         order: ++index,
@@ -162,9 +162,8 @@ export default class TripEventStore extends AbstractStore {
     const [first, last] = [names[0], names[names.length - 1]];
     if (names.length > TRIP_INFO_COUNT_DESTINATION_NAME) {
       return `${first} - ... - ${last}`;
-    } else {
-      return names.join(` - `);
     }
+    return names.join(` - `);
   }
 
   getTripInfo() {

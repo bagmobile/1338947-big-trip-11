@@ -24,8 +24,8 @@ const createSortElement = (sort, isChecked) => {
             </div>`);
 };
 
-const createSortTemplate = (sort, sortType) => {
-  const sortList = sort.map((item) => createSortElement(item, item.name === sortType)).join(`\n`);
+const createSortTemplate = (sorts, sortType) => {
+  const sortList = sorts.map((item) => createSortElement(item, item.name === sortType)).join(`\n`);
 
   return (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             ${sortList}
